@@ -7,7 +7,15 @@ export default defineConfig({
     port: 5173,
     open: true,
     watch: {
-      ignored: ['**/*.pptx', '**/*.pdf', '**/*.docx', '**/*.xlsx', '**/.git/**']
+      ignored: [
+        '**/*.pptx',
+        '**/*.pdf',
+        '**/*.docx',
+        '**/*.xlsx',
+        '**/.git/**',
+        '**/exported_slides/**',
+        '**/ppt_media/**'
+      ]
     }
   },
 })
