@@ -57,11 +57,6 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-5 pt-16 pb-20" style={{ position: 'relative' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 48, alignItems: 'center' }}>
             <div style={{ maxWidth: 580 }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 20, background: '#fff', border: '1px solid #BFDBFE', marginBottom: 24, boxShadow: '0 1px 4px rgba(0,86,179,.08)' }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#0056B3' }} />
-                <span style={{ fontSize: 12.5, color: '#0056B3', fontWeight: 700, letterSpacing: '.02em' }}>PwD Employment Platform · Tier 2/3 India</span>
-              </div>
-
               <h1 style={{ fontSize: 'clamp(32px,5vw,54px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', color: '#2D2D2D', marginBottom: 20 }}>
                 The placement layer<br />
                 <span style={{ color: '#0056B3' }}>no job portal builds.</span>
