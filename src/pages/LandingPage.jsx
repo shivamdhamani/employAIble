@@ -54,31 +54,54 @@ export default function LandingPage() {
         <div style={{ position: 'absolute', top: -60, right: -60, width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(circle,rgba(0,86,179,0.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: -80, left: 160, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(14,116,144,0.06) 0%,transparent 70%)', pointerEvents: 'none' }} />
 
-        <div className="max-w-6xl mx-auto px-5 pt-20 pb-24" style={{ position: 'relative' }}>
-          <div style={{ maxWidth: 620 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 20, background: '#fff', border: '1px solid #BFDBFE', marginBottom: 28, boxShadow: '0 1px 4px rgba(0,86,179,.08)' }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#0056B3' }} />
-              <span style={{ fontSize: 12.5, color: '#0056B3', fontWeight: 700, letterSpacing: '.02em' }}>PwD Employment Platform · Tier 2/3 India</span>
+        <div className="max-w-6xl mx-auto px-5 pt-16 pb-20" style={{ position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 48, alignItems: 'center' }}>
+            <div style={{ maxWidth: 580 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 20, background: '#fff', border: '1px solid #BFDBFE', marginBottom: 24, boxShadow: '0 1px 4px rgba(0,86,179,.08)' }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#0056B3' }} />
+                <span style={{ fontSize: 12.5, color: '#0056B3', fontWeight: 700, letterSpacing: '.02em' }}>PwD Employment Platform · Tier 2/3 India</span>
+              </div>
+
+              <h1 style={{ fontSize: 'clamp(32px,5vw,54px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', color: '#2D2D2D', marginBottom: 20 }}>
+                The placement layer<br />
+                <span style={{ color: '#0056B3' }}>no job portal builds.</span>
+              </h1>
+
+              <p style={{ fontSize: 16.5, lineHeight: 1.8, color: '#4B5563', maxWidth: 520, marginBottom: 32 }}>
+                employ<strong style={{ color: '#0056B3' }}>AI</strong>ble doesn't match resumes to listings. It computes whether a
+                placement will <em style={{ color: '#2D2D2D', fontStyle: 'normal', fontWeight: 600 }}>actually work</em> — factoring
+                in workplace accessibility, assistive tech needs, accommodation costs, and retention likelihood.
+              </p>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                <Link to="/candidate" className="btn-blue" style={{ fontSize: 15, padding: '12px 28px' }}>
+                  See how it works <ArrowRight size={16} />
+                </Link>
+                <Link to="/ai-match" className="btn-ghost" style={{ fontSize: 15, padding: '12px 28px' }}>
+                  Try the match scorer
+                </Link>
+              </div>
             </div>
 
-            <h1 style={{ fontSize: 'clamp(32px,5vw,58px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', color: '#2D2D2D', marginBottom: 20 }}>
-              The placement layer<br />
-              <span style={{ color: '#0056B3' }}>no job portal builds.</span>
-            </h1>
-
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: '#4B5563', maxWidth: 540, marginBottom: 36 }}>
-              employ<strong style={{ color: '#0056B3' }}>AI</strong>ble doesn't match resumes to listings. It computes whether a
-              placement will <em style={{ color: '#2D2D2D', fontStyle: 'normal', fontWeight: 600 }}>actually work</em> — factoring
-              in workplace accessibility, assistive tech needs, accommodation costs, and retention likelihood.
-            </p>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-              <Link to="/candidate" className="btn-blue" style={{ fontSize: 15, padding: '12px 28px' }}>
-                See how it works <ArrowRight size={16} />
-              </Link>
-              <Link to="/ai-match" className="btn-ghost" style={{ fontSize: 15, padding: '12px 28px' }}>
-                Try the match scorer
-              </Link>
+            {/* Logo Showcase Card */}
+            <div className="hidden md:flex" style={{
+              background: '#FFFFFF',
+              borderRadius: 20,
+              padding: '36px 32px',
+              border: '1px solid #D1DAE8',
+              boxShadow: '0 12px 32px -8px rgba(0,86,179,0.12), 0 4px 12px rgba(0,0,0,0.04)',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center'
+            }}>
+              <img src="/logo.png" alt="employAIble - Empowering PwD Through Career Opportunities" style={{ width: '100%', maxWidth: 320, height: 'auto', objectFit: 'contain', marginBottom: 16 }} />
+              <div style={{ fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: '#0E7490' }}>
+                National PwD Employment Companion
+              </div>
+              <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
+                Hyperlocal Feasibility · RPWD Act 2016 Aligned
+              </div>
             </div>
           </div>
         </div>
@@ -231,18 +254,8 @@ export default function LandingPage() {
       {/* ── Footer ──────────────────────────────── */}
       <footer style={{ background: '#fff', borderTop: '1px solid #D1DAE8' }}>
         <div className="max-w-6xl mx-auto px-5 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg,#0056B3,#0E7490)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7C2 4.24 4.24 2 7 2C9.76 2 12 4.24 12 7" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
-                <path d="M7 12C7 12 4 10.2 4 7.5" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
-                <path d="M7 12C7 12 10 10.2 10 7.5" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
-                <circle cx="7" cy="7" r="1.2" fill="white"/>
-              </svg>
-            </div>
-            <span style={{ fontSize: 16, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.015em' }}>
-              employ<span style={{ color: '#0056B3' }}>AI</span>ble
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.png" alt="employAIble - Empowering PwD Through Career Opportunities" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
           </div>
           <div style={{ fontSize: 13, color: '#6B7280' }}>
             Bridging the PwD employment gap across Tier 2 &amp; Tier 3 India · RPWD Act 2016
