@@ -1,415 +1,285 @@
 import { useState } from 'react'
-import {
-  Brain, Zap, ChevronRight, CheckCircle, AlertTriangle, Info,
-  Accessibility, Eye, Ear, Hand, MapPin, IndianRupee,
-  TrendingUp, BarChart3, Clock, RefreshCw
-} from 'lucide-react'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { Eye, Accessibility, MapPin, CheckCircle, RefreshCw } from 'lucide-react'
 
-const candidateProfiles = [
-  {
-    id: 1,
-    name: 'Ramesh Kumar',
-    location: 'Ajmer (Tier 3)',
-    disability: 'Visual Impairment (70%)',
-    disabilityType: 'visual',
-    skills: ['Data Entry', 'Excel (screen reader)', 'Tally', 'Customer Support'],
-    commuteRadius: 10,
-    udid: 'Verified',
-    digitalLiteracy: 'Medium',
-    screenReader: true,
-    remotePreferred: false,
-  },
-  {
-    id: 2,
-    name: 'Priya Meena',
-    location: 'Bhilwara (Tier 3)',
-    disability: 'Locomotor Disability (55%)',
-    disabilityType: 'locomotor',
-    skills: ['Bookkeeping', 'GST Filing', 'Communication'],
-    commuteRadius: 5,
-    udid: 'Verified',
-    digitalLiteracy: 'High',
-    screenReader: false,
-    remotePreferred: true,
-  },
+const candidates = [
+  { id: 1, name: 'Ramesh Kumar', location: 'Ajmer, Rajasthan', disability: 'Visual impairment · 70%', skills: ['Data Entry', 'Excel', 'Tally', 'Customer Support'], commute: 10, screenReader: true, udid: true, remote: false, disabilityType: 'visual' },
+  { id: 2, name: 'Priya Meena', location: 'Bhilwara, Rajasthan', disability: 'Locomotor disability · 55%', skills: ['Bookkeeping', 'GST Filing', 'Communication'], commute: 5, screenReader: false, udid: true, remote: true, disabilityType: 'locomotor' },
 ]
 
-const jobPostings = [
-  {
-    id: 1,
-    title: 'Data Entry Operator',
-    employer: 'Rajasthan State Cooperative',
-    location: 'Ajmer (2.1 km)',
-    mode: 'Hybrid',
-    screenReaderCompatible: true,
-    hasRamp: true,
-    hasLift: false,
-    shiftFlexible: true,
-    accommodationBudget: 5000,
-    salaryRange: '18,000–22,000',
-  },
-  {
-    id: 2,
-    title: 'Remote Customer Support',
-    employer: 'TechSeva Solutions',
-    location: 'Remote',
-    mode: 'Remote',
-    screenReaderCompatible: true,
-    hasRamp: null,
-    hasLift: null,
-    shiftFlexible: false,
-    accommodationBudget: 2000,
-    salaryRange: '14,000–18,000',
-  },
-  {
-    id: 3,
-    title: 'Office Admin',
-    employer: 'Ajmer Traders Co.',
-    location: 'Ajmer (0.8 km)',
-    mode: 'On-site',
-    screenReaderCompatible: false,
-    hasRamp: false,
-    hasLift: false,
-    shiftFlexible: true,
-    accommodationBudget: 8000,
-    salaryRange: '12,000–16,000',
-  },
+const jobs = [
+  { id: 1, title: 'Data Entry Operator', org: 'Rajasthan State Co-op Bank', mode: 'Hybrid', screenCompatible: true, ramp: true, lift: false, flexShift: true, reqSkills: ['Data Entry', 'Excel'] },
+  { id: 2, title: 'Remote Customer Support', org: 'TechSeva Solutions', mode: 'Remote', screenCompatible: true, ramp: false, lift: false, flexShift: false, reqSkills: ['Customer Support', 'Communication'] },
+  { id: 3, title: 'Office Administrator', org: 'Ajmer District Cooperative', mode: 'On-site', screenCompatible: false, ramp: false, lift: false, flexShift: true, reqSkills: ['Excel', 'Communication'] },
 ]
 
-function computeScore(candidate, job) {
-  const skillMatch = candidate.disabilityType === 'visual' ? (job.screenReaderCompatible ? 92 : 58) : 82
-  const travelFeasibility = job.mode === 'Remote' ? 100 : Math.max(0, 100 - (2.1 / candidate.commuteRadius) * 60)
-  const accessibilityScore = job.mode === 'Remote' ? 95 :
-    ((job.hasRamp ? 30 : 0) + (job.hasLift ? 20 : 0) + (job.shiftFlexible ? 20 : 0) + 30)
-  const screenReaderCompat = candidate.screenReader ? (job.screenReaderCompatible ? 95 : 30) : 85
-  const shiftCompatibility = job.shiftFlexible ? 88 : (candidate.remotePreferred ? 55 : 70)
-  const accommodationLevel = job.accommodationBudget > 6000 ? 'Moderate' : job.accommodationBudget > 2000 ? 'Low' : 'Minimal'
-  const estimatedCost = job.accommodationBudget
+const dimensions = [
+  { key: 'skill', label: 'Skill match', weight: 0.30 },
+  { key: 'travel', label: 'Travel feasibility', weight: 0.20 },
+  { key: 'access', label: 'Workplace accessibility', weight: 0.20 },
+  { key: 'at', label: 'Assistive tech compatibility', weight: 0.15 },
+  { key: 'shift', label: 'Shift & schedule fit', weight: 0.15 },
+]
 
-  const spp = Math.round(
-    (skillMatch * 0.3) +
-    (travelFeasibility * 0.2) +
-    (accessibilityScore * 0.2) +
-    (screenReaderCompat * 0.15) +
-    (shiftCompatibility * 0.15)
-  )
+function computeScore(c, j) {
+  const overlap = c.skills.filter(s => j.reqSkills.includes(s)).length
+  const skill = Math.min(100, 60 + overlap * 16)
 
-  return {
-    skillMatch: Math.round(skillMatch),
-    travelFeasibility: Math.round(travelFeasibility),
-    accessibilityScore: Math.round(accessibilityScore),
-    screenReaderCompat: Math.round(screenReaderCompat),
-    shiftCompatibility: Math.round(shiftCompatibility),
-    accommodationLevel,
-    estimatedCost,
-    spp,
-  }
+  const travel = j.mode === 'Remote' ? 100 : c.commute <= 5 ? 95 : c.commute <= 15 ? 72 : 45
+  const access = ((j.ramp ? 30 : 0) + (j.lift ? 20 : 0) + (j.flexShift ? 25 : 0) + 25)
+  const at = c.screenReader ? (j.screenCompatible ? 94 : 28) : 84
+  const shift = j.flexShift ? 90 : c.remote ? 75 : 62
+
+  const spp = Math.round(skill * 0.30 + travel * 0.20 + access * 0.20 + at * 0.15 + shift * 0.15)
+  const cost = c.disabilityType === 'visual' ? (j.screenCompatible ? 1800 : 6500) : (j.ramp ? 3200 : 14000)
+  const accommodation = cost < 3000 ? 'Minimal' : cost < 8000 ? 'Moderate' : 'Significant'
+
+  return { skill, travel, access, at, shift, spp, cost, accommodation }
 }
 
-function ScoreBar({ label, value, color, isNew = false }) {
-  const colors = {
-    blue: 'bg-blue-500',
-    emerald: 'bg-emerald-500',
-    purple: 'bg-purple-500',
-    cyan: 'bg-cyan-500',
-    orange: 'bg-orange-500',
-    pink: 'bg-pink-500',
-  }
+const steps = [
+  'Loading candidate profile and functional constraints...',
+  'Mapping geographic accessibility and transport pathways...',
+  'Validating assistive software and hardware interfaces...',
+  'Computing 7-dimension sustainable placement probability...',
+  'Placement feasibility report generated.'
+]
+
+function DimBar({ label, val, weight }) {
+  const color = val >= 80 ? '#15803D' : val >= 60 ? '#0056B3' : val >= 45 ? '#B45309' : '#B91C1C'
   return (
     <div>
-      <div className="flex items-center justify-between text-xs mb-1">
-        <span className="text-slate-400 flex items-center gap-1">
-          {isNew && <span className="px-1 py-0.5 rounded text-[10px] bg-blue-600/30 text-blue-300 border border-blue-500/30">NEW</span>}
-          {label}
-        </span>
-        <span className="font-bold text-white">{value}%</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+        <div style={{ fontSize: 13, color: '#4B5563', fontWeight: 500 }}>{label}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 11, color: '#6B7280', fontWeight: 600 }}>weight {weight * 100}%</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#2D2D2D', width: 38, textAlign: 'right' }}>{val}%</span>
+        </div>
       </div>
-      <div className="score-bar">
-        <div className={`score-fill ${colors[color] || 'bg-blue-500'}`} style={{ width: `${value}%` }} />
+      <div className="progress-track">
+        <div className="progress-fill" style={{ width: `${val}%`, background: color }} />
       </div>
     </div>
   )
 }
 
-const radarLabels = {
-  skillMatch: 'Skill Match',
-  travelFeasibility: 'Travel',
-  accessibilityScore: 'Accessibility',
-  screenReaderCompat: 'AT Compat.',
-  shiftCompatibility: 'Shift Fit',
+function SPPRing({ value, size = 96 }) {
+  const r = size / 2 - 9, circ = 2 * Math.PI * r
+  const color = value >= 80 ? '#15803D' : value >= 65 ? '#B45309' : '#B91C1C'
+  const label = value >= 80 ? 'High feasibility' : value >= 65 ? 'Moderate' : 'At-risk'
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#EEF2F7" strokeWidth={7} />
+        <circle
+          cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={7}
+          strokeDasharray={circ}
+          strokeDashoffset={circ * (1 - value / 100)}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size/2} ${size/2})`}
+          style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)' }}
+        />
+        <text x={size/2} y={size/2 + 5} textAnchor="middle" fill="#2D2D2D" fontSize={18} fontWeight={800}>{value}%</text>
+      </svg>
+      <div style={{ fontSize: 11.5, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '.04em' }}>
+        {label}
+      </div>
+    </div>
+  )
 }
 
 export default function AIMatchEngine() {
-  const [selectedCandidate, setSelectedCandidate] = useState(0)
-  const [selectedJob, setSelectedJob] = useState(0)
+  const [cIdx, setCIdx] = useState(0)
+  const [jIdx, setJIdx] = useState(0)
   const [running, setRunning] = useState(false)
+  const [stepIdx, setStepIdx] = useState(-1)
   const [result, setResult] = useState(null)
 
-  const candidate = candidateProfiles[selectedCandidate]
-  const job = jobPostings[selectedJob]
+  const c = candidates[cIdx], j = jobs[jIdx]
 
   const runMatch = () => {
-    setRunning(true)
-    setResult(null)
-    setTimeout(() => {
-      setResult(computeScore(candidate, job))
-      setRunning(false)
-    }, 1800)
+    setResult(null); setRunning(true); setStepIdx(0)
+    const interval = setInterval(() => {
+      setStepIdx(prev => {
+        if (prev >= steps.length - 1) { clearInterval(interval); setRunning(false); setResult(computeScore(c, j)); return prev }
+        return prev + 1
+      })
+    }, 380)
   }
 
   const radarData = result ? [
-    { subject: 'Skill Match', value: result.skillMatch },
-    { subject: 'Travel', value: result.travelFeasibility },
-    { subject: 'Accessibility', value: result.accessibilityScore },
-    { subject: 'AT Compat.', value: result.screenReaderCompat },
-    { subject: 'Shift Fit', value: result.shiftCompatibility },
+    { subject: 'Skill Fit', val: result.skill },
+    { subject: 'Travel Ease', val: result.travel },
+    { subject: 'Accessibility', val: result.access },
+    { subject: 'Assistive Tech', val: result.at },
+    { subject: 'Shift Fit', val: result.shift },
   ] : []
 
-  const sppColor = result ? (result.spp >= 80 ? '#22c55e' : result.spp >= 65 ? '#f59e0b' : '#ef4444') : '#3b82f6'
-  const sppLabel = result ? (result.spp >= 80 ? 'Excellent Match' : result.spp >= 65 ? 'Good Match' : 'Needs Accommodation') : ''
-
   return (
-    <div className="pt-24 pb-16 px-4 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-10">
-        <div className="flex items-center gap-2 mb-2">
-          <Brain className="w-5 h-5 text-purple-400" />
-          <span className="text-purple-400 text-sm font-semibold uppercase tracking-wider">Placement Feasibility Engine</span>
-        </div>
-        <h1 className="text-4xl font-black text-white mb-2">
-          <span className="gradient-text">7-Dimension</span> Match Scoring
-        </h1>
-        <p className="text-slate-400 max-w-2xl">
-          Pick a candidate profile and a job posting — the system runs a full feasibility check across 7 parameters and outputs a <strong className="text-white">Sustainable Placement Probability (SPP)</strong> score.
-          This is what existing job portals don't compute.
-        </p>
-      </div>
+    <div style={{ paddingTop: 58 }} className="page-in">
+      <div className="max-w-6xl mx-auto px-5 py-12">
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left: Inputs */}
-        <div className="space-y-6">
-          {/* Candidate selector */}
-          <div className="glass-card p-5">
-            <h2 className="font-bold text-white mb-4 flex items-center gap-2">
-              <Eye className="w-4 h-4 text-blue-400" /> Select Candidate
-            </h2>
-            <div className="space-y-3">
-              {candidateProfiles.map((c, i) => (
-                <button
-                  key={c.id}
-                  onClick={() => { setSelectedCandidate(i); setResult(null) }}
-                  className={`w-full text-left p-4 rounded-xl border transition-all ${
-                    selectedCandidate === i
-                      ? 'bg-blue-600/20 border-blue-500/50'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className="font-semibold text-white text-sm">{c.name}</div>
-                  <div className="text-slate-400 text-xs mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" />{c.location}</div>
-                  <div className="text-slate-500 text-xs mt-0.5">{c.disability}</div>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {c.skills.slice(0, 3).map(s => (
-                      <span key={s} className="px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 text-[10px]">{s}</span>
-                    ))}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Job selector */}
-          <div className="glass-card p-5">
-            <h2 className="font-bold text-white mb-4 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-emerald-400" /> Select Job Posting
-            </h2>
-            <div className="space-y-3">
-              {jobPostings.map((j, i) => (
-                <button
-                  key={j.id}
-                  onClick={() => { setSelectedJob(i); setResult(null) }}
-                  className={`w-full text-left p-4 rounded-xl border transition-all ${
-                    selectedJob === i
-                      ? 'bg-emerald-600/20 border-emerald-500/50'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className="font-semibold text-white text-sm">{j.title}</div>
-                  <div className="text-slate-400 text-xs mt-0.5">{j.employer}</div>
-                  <div className="text-slate-500 text-xs mt-0.5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />{j.location}
-                    <span className={`ml-2 px-1.5 py-0.5 rounded-full text-[10px] ${
-                      j.mode === 'Remote' ? 'bg-emerald-500/20 text-emerald-400' :
-                      j.mode === 'Hybrid' ? 'bg-cyan-500/20 text-cyan-400' :
-                      'bg-slate-500/20 text-slate-400'
-                    }`}>{j.mode}</span>
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    {j.screenReaderCompatible && <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 text-[10px]">Screen Reader ✓</span>}
-                    {j.hasRamp && <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 text-[10px]">Ramp ✓</span>}
-                    {j.shiftFlexible && <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-300 text-[10px]">Flex Shift ✓</span>}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Run button */}
-          <button
-            onClick={runMatch}
-            disabled={running}
-            className="w-full btn-primary flex items-center justify-center gap-3 py-4 text-base disabled:opacity-70"
-          >
-            {running ? (
-              <><RefreshCw className="w-5 h-5 animate-spin" /> Computing Match…</>
-            ) : (
-              <><Zap className="w-5 h-5" /> Run AI Match Engine</>
-            )}
-          </button>
+        {/* Header */}
+        <div style={{ marginBottom: 32 }}>
+          <div className="section-label" style={{ marginBottom: 8 }}>Match Scorer</div>
+          <h1 style={{ fontSize: 30, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.025em', marginBottom: 8 }}>
+            7-dimension placement feasibility engine
+          </h1>
+          <p style={{ fontSize: 15, color: '#4B5563', maxWidth: 560, lineHeight: 1.7 }}>
+            Test compatibility between any candidate profile and job vacancy. The system computes a Sustainable Placement Probability (SPP) predicting retention beyond 90 days.
+          </p>
         </div>
 
-        {/* Right: Results */}
-        <div className="lg:col-span-2 space-y-6">
-          {!result && !running && (
-            <div className="glass-card p-12 flex flex-col items-center justify-center text-center h-full">
-              <Brain className="w-16 h-16 text-purple-400/40 mb-4" />
-              <div className="text-slate-400 text-lg font-medium">Select a candidate and job,<br />then click Run AI Match Engine</div>
-              <p className="text-slate-600 text-sm mt-2">The engine will compute all 7 dimensions and output a Sustainable Placement Probability score.</p>
-            </div>
-          )}
-
-          {running && (
-            <div className="glass-card p-12 flex flex-col items-center justify-center text-center animate-fade-in">
-              <div className="relative mb-6">
-                <div className="w-20 h-20 border-4 border-purple-500/30 rounded-full animate-spin border-t-purple-500" />
-                <Brain className="w-8 h-8 text-purple-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-              </div>
-              <div className="text-white font-semibold text-lg">Computing Match…</div>
-              <div className="space-y-2 mt-4 text-sm text-slate-400">
-                {[
-                  '✦ Analysing functional capability profile…',
-                  '✦ Mapping workplace accessibility data…',
-                  '✦ Computing commute feasibility…',
-                  '✦ Estimating accommodation requirements…',
-                  '✦ Running placement retention model…',
-                ].map((step, i) => (
-                  <div key={i} className="animate-pulse" style={{ animationDelay: `${i * 0.3}s` }}>{step}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, alignItems: 'start' }}>
+          {/* Left: selector panel */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="card p-6">
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.05em' }}>1. Select Candidate</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {candidates.map((cn, i) => (
+                  <button key={i} onClick={() => { setCIdx(i); setResult(null) }} style={{
+                    padding: '14px', borderRadius: 8, cursor: 'pointer', textAlign: 'left', width: '100%',
+                    border: `1.5px solid ${cIdx === i ? '#0056B3' : '#D1DAE8'}`,
+                    background: cIdx === i ? '#E8F0FA' : '#FFFFFF', transition: 'all 0.15s'
+                  }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: cIdx === i ? '#0056B3' : '#2D2D2D', marginBottom: 3 }}>{cn.name}</div>
+                    <div style={{ fontSize: 12, color: '#4B5563' }}>{cn.location}</div>
+                    <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{cn.disability}</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
+                      {cn.skills.slice(0, 3).map(s => <span key={s} className="badge badge-gray" style={{ fontSize: 10 }}>{s}</span>)}
+                    </div>
+                  </button>
                 ))}
               </div>
             </div>
-          )}
 
-          {result && !running && (
-            <div className="space-y-6 animate-fade-in">
-              {/* SPP Score hero */}
-              <div className="glass-card p-6 bg-gradient-to-br from-purple-600/10 to-blue-600/10 border-purple-500/20">
-                <div className="flex items-center gap-6">
-                  <div className="shrink-0">
-                    <svg width="120" height="120" viewBox="0 0 120 120">
-                      <circle cx="60" cy="60" r="50" fill="none" stroke="#1e293b" strokeWidth="10" />
-                      <circle
-                        cx="60" cy="60" r="50"
-                        fill="none"
-                        stroke={sppColor}
-                        strokeWidth="10"
-                        strokeDasharray={`${2 * Math.PI * 50}`}
-                        strokeDashoffset={`${2 * Math.PI * 50 * (1 - result.spp / 100)}`}
-                        strokeLinecap="round"
-                        transform="rotate(-90 60 60)"
-                        style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
-                      />
-                      <text x="60" y="55" textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">{result.spp}%</text>
-                      <text x="60" y="72" textAnchor="middle" fill="#94a3b8" fontSize="9">SPP Score</text>
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-2xl font-black text-white mb-1">{sppLabel}</div>
-                    <div className="text-slate-400 text-sm mb-3">
-                      Sustainable Placement Probability for <strong className="text-white">{candidate.name}</strong> at <strong className="text-white">{job.title}</strong>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                        result.spp >= 80 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                        result.spp >= 65 ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400' :
-                        'bg-red-500/10 border-red-500/30 text-red-400'
-                      }`}>
-                        {result.spp >= 80 ? '✓ Recommend Placement' : result.spp >= 65 ? '⚠ Proceed with Accommodation' : '✗ High Intervention Needed'}
-                      </span>
-                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-white/5 border border-white/10 text-slate-300">
-                        Accommodation: {result.accommodationLevel}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 7 dimension scores */}
-              <div className="glass-card p-6">
-                <h3 className="font-bold text-white mb-5 flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-blue-400" /> Full 7-Dimension Breakdown
-                </h3>
-                <div className="space-y-4">
-                  <ScoreBar label="Skill Match" value={result.skillMatch} color="blue" />
-                  <ScoreBar label="Travel Feasibility" value={result.travelFeasibility} color="cyan" />
-                  <ScoreBar label="Workplace Accessibility Score" value={result.accessibilityScore} color="emerald" isNew />
-                  <ScoreBar label="Assistive Technology Compatibility" value={result.screenReaderCompat} color="purple" isNew />
-                  <ScoreBar label="Shift Compatibility" value={result.shiftCompatibility} color="orange" isNew />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mt-5">
-                  <div className="bg-slate-800/60 rounded-xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">Accommodation Level</div>
-                    <div className={`font-bold text-lg ${
-                      result.accommodationLevel === 'Minimal' ? 'text-emerald-400' :
-                      result.accommodationLevel === 'Low' ? 'text-green-400' :
-                      'text-yellow-400'
-                    }`}>{result.accommodationLevel}</div>
-                  </div>
-                  <div className="bg-slate-800/60 rounded-xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">Estimated Accommodation Cost</div>
-                    <div className="font-bold text-lg text-white flex items-center gap-0.5">
-                      <IndianRupee className="w-4 h-4" />{result.estimatedCost.toLocaleString('en-IN')}/yr
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Radar chart */}
-              <div className="glass-card p-6">
-                <h3 className="font-bold text-white mb-4">Match Profile — Radar View</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <RadarChart data={radarData}>
-                    <PolarGrid stroke="#1e293b" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#475569', fontSize: 10 }} />
-                    <Radar name="Score" dataKey="value" stroke={sppColor} fill={sppColor} fillOpacity={0.2} />
-                    <Tooltip
-                      contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      labelStyle={{ color: '#fff' }}
-                      itemStyle={{ color: '#94a3b8' }}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Functional capability statement */}
-              <div className="glass-card p-6 border border-blue-500/20 bg-blue-600/5">
-                <div className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-3">✦ Functional Capability Statement (System Generated)</div>
-                <div className="bg-slate-900/60 rounded-xl p-4 text-sm text-slate-300 font-mono leading-relaxed">
-                  <span className="text-slate-500">Resume says: </span>
-                  <span className="text-white">"I know Excel and data entry."</span>
-                  <br /><br />
-                  <span className="text-slate-500">EmployAIable says: </span>
-                  <span className="text-emerald-300">
-                    "{candidate.name} can perform Excel-based data entry independently using NVDA screen reader,
-                    provided the employer's system supports keyboard navigation and Tab-key traversal.
-                    Commute feasible within {candidate.commuteRadius}km. Estimated employer accommodation cost:
-                    ₹{result.estimatedCost.toLocaleString('en-IN')}/year. Sustainable placement probability: {result.spp}%."
-                  </span>
-                </div>
+            <div className="card p-6">
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.05em' }}>2. Select Job Role</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {jobs.map((jb, i) => (
+                  <button key={i} onClick={() => { setJIdx(i); setResult(null) }} style={{
+                    padding: '14px', borderRadius: 8, cursor: 'pointer', textAlign: 'left', width: '100%',
+                    border: `1.5px solid ${jIdx === i ? '#0056B3' : '#D1DAE8'}`,
+                    background: jIdx === i ? '#E8F0FA' : '#FFFFFF', transition: 'all 0.15s'
+                  }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: jIdx === i ? '#0056B3' : '#2D2D2D', marginBottom: 3 }}>{jb.title}</div>
+                    <div style={{ fontSize: 12, color: '#4B5563', marginBottom: 6 }}>{jb.org}</div>
+                    <span className={`badge ${jb.mode === 'Remote' ? 'badge-teal' : jb.mode === 'Hybrid' ? 'badge-indigo' : 'badge-gray'}`}>{jb.mode}</span>
+                  </button>
+                ))}
               </div>
             </div>
-          )}
+
+            <button onClick={runMatch} disabled={running} className="btn-blue" style={{ justifyContent: 'center', width: '100%', padding: '12px' }}>
+              {running ? <><RefreshCw size={16} className="spin" /> Computing feasibility...</> : 'Run feasibility analysis'}
+            </button>
+          </div>
+
+          {/* Right: results panel */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {/* Loading */}
+            {running && (
+              <div className="card p-7">
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 18 }}>Running 7-dimension algorithmic validation...</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {steps.map((s, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, opacity: i <= stepIdx ? 1 : 0.35, transition: 'opacity 0.25s' }}>
+                      {i < stepIdx
+                        ? <CheckCircle size={17} color="#15803D" />
+                        : i === stepIdx
+                          ? <RefreshCw size={17} color="#0056B3" className="spin" />
+                          : <div style={{ width: 17, height: 17, borderRadius: '50%', border: '1.5px solid #D1DAE8' }} />
+                      }
+                      <span style={{ fontSize: 13.5, color: i <= stepIdx ? '#2D2D2D' : '#6B7280', fontWeight: i === stepIdx ? 600 : 400 }}>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!running && !result && (
+              <div className="card p-12" style={{ textAlign: 'center' }}>
+                <div style={{ width: 50, height: 50, borderRadius: 12, background: '#E8F0FA', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                  <Eye size={24} color="#0056B3" />
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#2D2D2D', marginBottom: 6 }}>Ready for feasibility check</div>
+                <div style={{ fontSize: 13.5, color: '#4B5563', lineHeight: 1.6, maxWidth: 360, margin: '0 auto' }}>
+                  Pick a candidate and an opening on the left, then trigger the feasibility test to view the multidimensional score report.
+                </div>
+              </div>
+            )}
+
+            {/* Result display */}
+            {result && !running && (
+              <>
+                <div className="card p-7">
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
+                    <SPPRing value={result.spp} size={106} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Sustainable Placement Probability</div>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: '#2D2D2D', marginBottom: 3 }}>
+                        {c.name} → {j.title}
+                      </div>
+                      <div style={{ fontSize: 13, color: '#4B5563', marginBottom: 14 }}>{j.org} · {j.mode} placement</div>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ padding: '10px 16px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Accommodation</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: result.accommodation === 'Minimal' ? '#15803D' : '#B45309' }}>{result.accommodation}</div>
+                        </div>
+                        <div style={{ padding: '10px 16px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Annual accommodation cost</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#2D2D2D' }}>₹{result.cost.toLocaleString('en-IN')}</div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Radar chart */}
+                    <div style={{ width: 190 }}>
+                      <ResponsiveContainer width="100%" height={150}>
+                        <RadarChart data={radarData}>
+                          <PolarGrid stroke="#D1DAE8" />
+                          <PolarAngleAxis dataKey="subject" tick={{ fill: '#4B5563', fontSize: 10, fontWeight: 600 }} />
+                          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                          <Radar dataKey="val" fill="#0056B3" fillOpacity={0.16} stroke="#0056B3" strokeWidth={2} />
+                          <Tooltip content={({ active, payload }) => active && payload?.[0] ? (
+                            <div style={{ background: '#FFFFFF', border: '1px solid #D1DAE8', borderRadius: 6, padding: '6px 10px', fontSize: 12, color: '#2D2D2D', boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}>
+                              {payload[0].payload.subject}: <strong>{payload[0].value}%</strong>
+                            </div>
+                          ) : null} />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Breakdown */}
+                <div className="card p-6">
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 16 }}>Score dimension breakdown</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    {dimensions.map(dim => (
+                      <DimBar key={dim.key} label={dim.label} val={result[dim.key]} weight={dim.weight} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Capability statement */}
+                <div className="card p-6">
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 12 }}>System-computed functional capability statement</div>
+                  <div style={{ background: '#F5F7FA', borderRadius: 8, border: '1px solid #D1DAE8', padding: '16px 20px', fontFamily: 'monospace', fontSize: 13, lineHeight: 2, color: '#2D2D2D' }}>
+                    <div style={{ color: '#6B7280' }}>// Standard resume claim:</div>
+                    <div style={{ color: '#4B5563', fontWeight: 600 }}>"Candidate knows Excel, data entry and office tools."</div>
+                    <div style={{ marginTop: 10, color: '#6B7280' }}>// Precise functional capability output:</div>
+                    <div><span style={{ color: '#15803D', fontWeight: 800 }}>✓</span> Performs spreadsheet tasks via <strong style={{ color: '#0056B3' }}>NVDA screen reader</strong></div>
+                    <div><span style={{ color: '#15803D', fontWeight: 800 }}>✓</span> Operates efficiently using <strong style={{ color: '#0056B3' }}>keyboard-only shortcuts</strong> (mouse-independent)</div>
+                    <div>
+                      <span style={{ color: result.at >= 80 ? '#15803D' : '#B91C1C', fontWeight: 800 }}>{result.at >= 80 ? '✓' : '✗'}</span> Workplace CRM {result.at >= 80 ? 'is confirmed' : 'is NOT'} <strong style={{ color: result.at >= 80 ? '#0056B3' : '#B91C1C' }}>screen-reader accessible</strong>
+                    </div>
+                    <div><span style={{ color: '#B45309', fontWeight: 800 }}>→</span> Annual accommodation estimate: <strong style={{ color: '#2D2D2D' }}>₹{result.cost.toLocaleString('en-IN')}</strong> · Subsidy cover available</div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

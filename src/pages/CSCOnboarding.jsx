@@ -1,319 +1,278 @@
 import { useState } from 'react'
-import {
-  MapPin, Wifi, WifiOff, Mic, Volume2, QrCode, Users, Phone,
-  CheckCircle, ChevronRight, User, FileText, Accessibility,
-  AlertCircle, Globe, Languages, Smartphone
-} from 'lucide-react'
+import { CheckCircle, Wifi, WifiOff, Volume2, Mic, QrCode, AlertCircle, MapPin } from 'lucide-react'
 
-const languages = ['हिंदी (Hindi)', 'English', 'Rajasthani', 'মারwadi', 'Urdu']
-
-const steps = [
-  { id: 0, label: 'Language', icon: Languages },
-  { id: 1, label: 'Identity', icon: User },
-  { id: 2, label: 'Disability Type', icon: Accessibility },
-  { id: 3, label: 'Basic Skills', icon: FileText },
-  { id: 4, label: 'Complete', icon: CheckCircle },
-]
+const languages = ['हिंदी', 'English', 'Rajasthani', 'मारवाड़ी']
 
 const disabilityOptions = [
-  { id: 'visual', label: 'Aankhon ki dikkat', label2: 'Visual Impairment', icon: '👁️' },
-  { id: 'hearing', label: 'Kaan ki dikkat', label2: 'Hearing Impairment', icon: '👂' },
-  { id: 'locomotor', label: 'Chalne-firne mein dikkat', label2: 'Locomotor Disability', icon: '🦽' },
-  { id: 'cognitive', label: 'Yaad ya seekhne mein dikkat', label2: 'Intellectual / Autism', icon: '🧠' },
+  { id: 'visual', emoji: '👁️', label: 'Aankhon ki dikkat', sub: 'Visual Impairment' },
+  { id: 'hearing', emoji: '👂', label: 'Kaan ki dikkat', sub: 'Hearing Impairment' },
+  { id: 'locomotor', emoji: '🦽', label: 'Chalne-firne mein dikkat', sub: 'Locomotor Disability' },
+  { id: 'cognitive', emoji: '🧠', label: 'Seekhne mein dikkat', sub: 'Intellectual / Autism' },
 ]
 
 const skillOptions = [
-  { id: 'phone', label: 'Mobile phone use karna aata hai', icon: '📱' },
-  { id: 'computer', label: 'Computer/Laptop thoda aata hai', icon: '💻' },
-  { id: 'reading', label: 'Hindi mein padh sakta/sakti hoon', icon: '📖' },
-  { id: 'numbers', label: 'Chota hisaab kitaab aata hai', icon: '🔢' },
-  { id: 'speaking', label: 'Achi baat kar sakta/sakti hoon', icon: '🗣️' },
+  { id: 'phone', emoji: '📱', label: 'Mobile phone use karna aata hai' },
+  { id: 'computer', emoji: '💻', label: 'Computer thoda aata hai' },
+  { id: 'reading', emoji: '📖', label: 'Hindi mein padh sakta/sakti hoon' },
+  { id: 'numbers', emoji: '🔢', label: 'Basic hisaab kar sakta/sakti hoon' },
+  { id: 'speaking', emoji: '🗣️', label: 'Achhi tarah baat kar sakta/sakti hoon' },
 ]
+
+const stepLabels = ['Bhasha', 'Jankari', 'Disability', 'Skills', 'Complete']
 
 export default function CSCOnboarding() {
   const [step, setStep] = useState(0)
   const [offline, setOffline] = useState(false)
-  const [selectedLang, setSelectedLang] = useState('हिंदी (Hindi)')
-  const [selectedDisability, setSelectedDisability] = useState(null)
-  const [selectedSkills, setSelectedSkills] = useState([])
-  const [voiceMode, setVoiceMode] = useState(false)
-  const [form, setForm] = useState({ name: '', aadhaar: '', mobile: '', village: '', district: 'Ajmer' })
+  const [voice, setVoice] = useState(false)
+  const [lang, setLang] = useState('हिंदी')
+  const [disability, setDisability] = useState(null)
+  const [skills, setSkills] = useState([])
+  const [form, setForm] = useState({ name: '', mobile: '', village: '' })
 
-  const toggleSkill = (id) => {
-    setSelectedSkills(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
-  }
+  const toggleSkill = id => setSkills(p => p.includes(id) ? p.filter(s => s !== id) : [...p, id])
+  const platformId = `EMP-AJM-${Math.floor(53000 + Math.random() * 9000)}`
 
   return (
-    <div className="pt-24 pb-16 px-4 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <MapPin className="w-5 h-5 text-rose-400" />
-          <span className="text-rose-400 text-sm font-semibold uppercase tracking-wider">CSC / Panchayat Onboarding Node</span>
+    <div style={{ paddingTop: 58 }} className="page-in">
+      <div className="max-w-2xl mx-auto px-5 py-12">
+
+        {/* Header */}
+        <div style={{ marginBottom: 28 }}>
+          <div className="section-label" style={{ marginBottom: 8 }}>CSC / Panchayat Access</div>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.025em', marginBottom: 8 }}>
+            Assisted onboarding portal
+          </h1>
+          <p style={{ fontSize: 14.5, color: '#4B5563', lineHeight: 1.6 }}>
+            Designed for Common Service Centre (CSC) Village Level Entrepreneurs and Gram Panchayat desks. High-contrast, keyboard accessible, and works on low bandwidth with automatic sync.
+          </p>
         </div>
-        <h1 className="text-4xl font-black text-white mb-2">
-          <span className="gradient-text">Offline-First</span> Onboarding
-        </h1>
-        <p className="text-slate-400">
-          Designed for Common Service Centres and Gram Panchayat offices. Low bandwidth, voice-guided, regional-language-first.
-        </p>
-      </div>
 
-      {/* Connectivity + Voice bar */}
-      <div className="glass-card p-4 flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setOffline(!offline)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
-              offline
-                ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
-                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-            }`}
-          >
-            {offline ? <WifiOff className="w-4 h-4" /> : <Wifi className="w-4 h-4" />}
-            {offline ? 'Offline Mode' : 'Online Mode'}
-          </button>
-          <div className="text-slate-500 text-xs">
-            {offline ? '⚡ Data will sync when connection resumes' : '✓ Connected to EmployAIable servers'}
+        {/* Status bar */}
+        <div className="card p-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button onClick={() => setOffline(!offline)} style={{
+              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              border: `1.5px solid ${offline ? '#B45309' : '#15803D'}`,
+              background: offline ? '#FEF3C7' : '#DCFCE7',
+              color: offline ? '#B45309' : '#15803D', transition: 'all 0.15s'
+            }}>
+              {offline ? <WifiOff size={14} /> : <Wifi size={14} />}
+              {offline ? 'Offline cache active' : 'Online connected'}
+            </button>
+            {offline && (
+              <span style={{ fontSize: 12, color: '#4B5563' }}>
+                Records store locally and sync upon reconnection.
+              </span>
+            )}
           </div>
-        </div>
-        <button
-          onClick={() => setVoiceMode(!voiceMode)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
-            voiceMode
-              ? 'bg-blue-500/10 border-blue-500/30 text-blue-400'
-              : 'bg-white/5 border-white/10 text-slate-400'
-          }`}
-        >
-          {voiceMode ? <Volume2 className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-          Voice Guide {voiceMode ? 'ON' : 'OFF'}
-        </button>
-      </div>
-
-      {voiceMode && (
-        <div className="glass-card p-4 mb-5 border border-blue-500/20 bg-blue-600/5 flex items-center gap-3 animate-fade-in">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
-            <Volume2 className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <div className="text-blue-300 font-semibold text-sm">Voice Guide Active 🎙️</div>
-            <div className="text-slate-400 text-xs">
-              {step === 0 && '"Namaste! Apni bhasha chuniye. Please select your language."'}
-              {step === 1 && '"Apna naam aur gaon bharen. Please fill your name and village."'}
-              {step === 2 && '"Apni disability type chuniye."'}
-              {step === 3 && '"Jo kaam aata hai, wo chuniye."'}
-              {step === 4 && '"Badhaai ho! Aapka registration ho gaya!"'}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Progress stepper */}
-      <div className="flex items-center mb-8 overflow-x-auto pb-2">
-        {steps.map((s, i) => (
-          <div key={s.id} className="flex items-center">
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-              step === s.id ? 'bg-rose-600/20 border border-rose-500/40 text-rose-300' :
-              i < step ? 'bg-emerald-600/20 text-emerald-400' :
-              'text-slate-600'
-            }`}>
-              {i < step ? <CheckCircle className="w-3.5 h-3.5" /> : <s.icon className="w-3.5 h-3.5" />}
-              {s.label}
-            </div>
-            {i < steps.length - 1 && <div className={`w-6 h-0.5 mx-1 rounded-full ${i < step ? 'bg-emerald-500' : 'bg-slate-800'}`} />}
-          </div>
-        ))}
-      </div>
-
-      {/* Step 0: Language */}
-      {step === 0 && (
-        <div className="glass-card p-6 space-y-5 animate-fade-in">
-          <div className="text-center">
-            <div className="text-4xl mb-3">🌐</div>
-            <h2 className="text-2xl font-bold text-white">Apni Bhasha Chuniye</h2>
-            <p className="text-slate-400 text-sm">Select your language / अपनी भाषा चुनें</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {languages.map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setSelectedLang(lang)}
-                className={`p-4 rounded-2xl border text-center font-semibold text-lg transition-all ${
-                  selectedLang === lang
-                    ? 'bg-rose-600/20 border-rose-500/50 text-rose-300 scale-105'
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20'
-                }`}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
-          <button onClick={() => setStep(1)} className="w-full btn-primary text-lg py-4">
-            Aage Badhein → Continue
+          <button onClick={() => setVoice(!voice)} style={{
+            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            border: `1.5px solid ${voice ? '#0056B3' : '#D1DAE8'}`,
+            background: voice ? '#E8F0FA' : '#FFFFFF',
+            color: voice ? '#0056B3' : '#4B5563', transition: 'all 0.15s'
+          }}>
+            {voice ? <Volume2 size={15} /> : <Mic size={15} />}
+            Voice guide (आवाज़ निर्देश)
           </button>
         </div>
-      )}
 
-      {/* Step 1: Identity */}
-      {step === 1 && (
-        <div className="glass-card p-6 space-y-5 animate-fade-in">
-          <div className="text-center">
-            <div className="text-4xl mb-3">👤</div>
-            <h2 className="text-2xl font-bold text-white">Aapki Jankari</h2>
-            <p className="text-slate-400 text-sm">Basic information / बुनियादी जानकारी</p>
+        {/* Voice prompt box */}
+        {voice && (
+          <div className="card p-5" style={{ border: '1.5px solid #BFDBFE', background: '#E8F0FA', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#0056B3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Volume2 size={16} color="white" />
+            </div>
+            <div style={{ fontSize: 14, color: '#0056B3', fontWeight: 600, lineHeight: 1.5 }}>
+              {step === 0 && '"नमस्ते! अपनी पसंदीदा भाषा चुनें।"'}
+              {step === 1 && '"उम्मीदवार का नाम, गांव और मोबाइल नंबर दर्ज करें।"'}
+              {step === 2 && '"दिव्यांगता की श्रेणी चुनें।"'}
+              {step === 3 && '"जो-जो काम आते हैं, उन्हें टिक करें।"'}
+              {step === 4 && '"पंजीकरण सफलतापूर्वक पूर्ण हुआ। पावती डाउनलोड करें।"'}
+            </div>
           </div>
+        )}
 
-          <div className="space-y-4">
+        {/* Step progress */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 28, gap: 0 }}>
+          {stepLabels.map((s, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < stepLabels.length - 1 ? '1' : '0' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                <div className={`step-dot ${i < step ? 'step-dot-done' : i === step ? 'step-dot-active' : 'step-dot-pending'}`}>
+                  {i < step ? <CheckCircle size={14} /> : i + 1}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: i === step ? '#0056B3' : i < step ? '#15803D' : '#6B7280', textTransform: 'uppercase', letterSpacing: '.04em', whiteSpace: 'nowrap' }}>{s}</span>
+              </div>
+              {i < stepLabels.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: i < step ? '#15803D' : '#D1DAE8', margin: '0 8px', marginBottom: 18 }} />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Step 0: Language */}
+        {step === 0 && (
+          <div className="card p-8 space-y-6">
+            <div style={{ textAlign: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>🌐</div>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#2D2D2D', marginBottom: 4 }}>अपनी भाषा चुनें</h2>
+              <p style={{ fontSize: 13.5, color: '#4B5563' }}>Select preferred regional language</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              {languages.map(l => (
+                <button key={l} onClick={() => setLang(l)} style={{
+                  padding: '18px', borderRadius: 8, border: `1.5px solid ${lang === l ? '#0056B3' : '#D1DAE8'}`,
+                  background: lang === l ? '#E8F0FA' : '#FFFFFF',
+                  color: lang === l ? '#0056B3' : '#2D2D2D', fontSize: 17, fontWeight: 700,
+                  cursor: 'pointer', transition: 'all 0.15s'
+                }}>{l}</button>
+              ))}
+            </div>
+            <button onClick={() => setStep(1)} className="btn-blue" style={{ width: '100%', justifyContent: 'center', padding: '13px', fontSize: 15 }}>
+              आगे बढ़ें (Continue) →
+            </button>
+          </div>
+        )}
+
+        {/* Step 1: Details */}
+        {step === 1 && (
+          <div className="card p-8 space-y-5">
+            <div>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#2D2D2D', marginBottom: 4 }}>मूल जानकारी (Candidate Details)</h2>
+              <p style={{ fontSize: 13, color: '#4B5563' }}>Enter applicant identification details</p>
+            </div>
+
             {[
-              { key: 'name', label: 'Naam (Name)', placeholder: 'Apna poora naam likhein', type: 'text' },
-              { key: 'village', label: 'Gaon / Sheher (Village / Town)', placeholder: 'Gaon ya sheher ka naam', type: 'text' },
-              { key: 'mobile', label: 'Mobile Number', placeholder: '10 ankon ka number', type: 'tel' },
-              { key: 'aadhaar', label: 'Aadhaar Number (optional)', placeholder: 'XXXX-XXXX-XXXX', type: 'text' },
-            ].map((field) => (
-              <div key={field.key}>
-                <label className="text-slate-300 text-sm font-medium mb-1.5 block">{field.label}</label>
-                <input
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  value={form[field.key]}
-                  onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
-                  className="w-full bg-slate-800/80 border border-white/10 rounded-xl px-4 py-4 text-white text-lg focus:outline-none focus:border-rose-500 transition-colors placeholder:text-slate-600"
-                />
+              { key: 'name', label: 'पूरा नाम (Full Name)', placeholder: 'नाम दर्ज करें...' },
+              { key: 'village', label: 'गांव / कस्बा (Village / Town)', placeholder: 'गांव या शहर का नाम...' },
+              { key: 'mobile', label: 'मोबाइल नंबर (Mobile Number)', placeholder: '10 अंकों का नंबर...' },
+            ].map(f => (
+              <div key={f.key}>
+                <label className="label">{f.label}</label>
+                <input className="input" style={{ fontSize: 15, padding: '12px 14px' }}
+                  placeholder={f.placeholder}
+                  value={form[f.key]}
+                  onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
               </div>
             ))}
-          </div>
 
-          {/* QR scan option */}
-          <div className="flex items-center gap-3 bg-slate-800/60 rounded-xl p-4">
-            <QrCode className="w-8 h-8 text-blue-400 shrink-0" />
+            <div style={{ padding: '14px 16px', background: '#F5F7FA', borderRadius: 8, border: '1px solid #D1DAE8', display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}>
+              <QrCode size={22} color="#0056B3" />
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#2D2D2D' }}>UDID कार्ड क्यूआर स्कैन करें</div>
+                <div style={{ fontSize: 12, color: '#4B5563' }}>Auto-fill disability details from UDID card</div>
+              </div>
+              <span className="badge badge-blue" style={{ marginLeft: 'auto' }}>Scan</span>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setStep(0)} className="btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>← वापस</button>
+              <button onClick={() => setStep(2)} className="btn-blue" style={{ flex: 2, justifyContent: 'center', fontSize: 15, padding: 12 }}>आगे बढ़ें →</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Disability */}
+        {step === 2 && (
+          <div className="card p-8 space-y-5">
             <div>
-              <div className="text-white text-sm font-semibold">UDID QR Code Scan</div>
-              <div className="text-slate-400 text-xs">Agar UDID card hai to scan karein — details auto-fill ho jaenge</div>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#2D2D2D', marginBottom: 4 }}>दिव्यांगता श्रेणी (Disability Category)</h2>
+              <p style={{ fontSize: 13, color: '#4B5563' }}>Select correct disability classification</p>
             </div>
-            <button className="ml-auto px-3 py-1.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-medium">Scan</button>
-          </div>
-
-          <div className="flex gap-3">
-            <button onClick={() => setStep(0)} className="btn-secondary flex-1">← Wapas</button>
-            <button onClick={() => setStep(2)} className="btn-primary flex-1 text-lg">Aage →</button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Disability */}
-      {step === 2 && (
-        <div className="glass-card p-6 space-y-5 animate-fade-in">
-          <div className="text-center">
-            <div className="text-4xl mb-3">♿</div>
-            <h2 className="text-2xl font-bold text-white">Aapki Disability</h2>
-            <p className="text-slate-400 text-sm">Apni disability type chuniye / Select disability type</p>
-          </div>
-
-          <div className="space-y-3">
-            {disabilityOptions.map((d) => (
-              <button
-                key={d.id}
-                onClick={() => setSelectedDisability(d.id)}
-                className={`w-full flex items-center gap-4 p-5 rounded-2xl border text-left transition-all ${
-                  selectedDisability === d.id
-                    ? 'bg-rose-600/20 border-rose-500/50 scale-[1.02]'
-                    : 'bg-white/5 border-white/10 hover:border-white/20'
-                }`}
-              >
-                <span className="text-3xl">{d.icon}</span>
+            {disabilityOptions.map(d => (
+              <button key={d.id} onClick={() => setDisability(d.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 16, padding: '16px 18px', borderRadius: 8, cursor: 'pointer',
+                border: `1.5px solid ${disability === d.id ? '#0056B3' : '#D1DAE8'}`,
+                background: disability === d.id ? '#E8F0FA' : '#FFFFFF',
+                width: '100%', textAlign: 'left', transition: 'all 0.15s'
+              }}>
+                <span style={{ fontSize: 24 }}>{d.emoji}</span>
                 <div>
-                  <div className="font-bold text-white text-lg">{d.label}</div>
-                  <div className="text-slate-400 text-sm">{d.label2}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: disability === d.id ? '#0056B3' : '#2D2D2D' }}>{d.label}</div>
+                  <div style={{ fontSize: 12, color: '#4B5563', marginTop: 2 }}>{d.sub}</div>
                 </div>
-                {selectedDisability === d.id && <CheckCircle className="w-6 h-6 text-rose-400 ml-auto" />}
+                {disability === d.id && <CheckCircle size={18} color="#0056B3" style={{ marginLeft: 'auto' }} />}
               </button>
             ))}
-          </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
-            <div className="text-blue-300 text-xs">
-              <strong>Zaruri nahi:</strong> Agar abhi disability certificate nahi hai, tab bhi register kar sakte hain. Hum aapko najdiki Zila Punarvas Kendra se certificate dilwane mein madad karenge.
+            <div style={{ padding: '12px 16px', background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <AlertCircle size={16} color="#B45309" style={{ flexShrink: 0, marginTop: 2 }} />
+              <p style={{ fontSize: 13, color: '#B45309', lineHeight: 1.5 }}>
+                यदि प्रमाण पत्र नहीं है, तो निकटतम जिला पुनर्वास केंद्र (DDRC) से परीक्षण हेतु आवेदन मंच द्वारा भेजा जाएगा।
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setStep(1)} className="btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>← वापस</button>
+              <button onClick={() => setStep(3)} disabled={!disability} className="btn-blue" style={{ flex: 2, justifyContent: 'center', fontSize: 15, padding: 12, opacity: disability ? 1 : 0.5 }}>आगे बढ़ें →</button>
             </div>
           </div>
+        )}
 
-          <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="btn-secondary flex-1">← Wapas</button>
-            <button onClick={() => setStep(3)} disabled={!selectedDisability} className="btn-primary flex-1 text-lg disabled:opacity-50">Aage →</button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Skills */}
-      {step === 3 && (
-        <div className="glass-card p-6 space-y-5 animate-fade-in">
-          <div className="text-center">
-            <div className="text-4xl mb-3">⭐</div>
-            <h2 className="text-2xl font-bold text-white">Aapke Kaam</h2>
-            <p className="text-slate-400 text-sm">Jo bhi aata hai, select karein (sab galat nahi hoga!) / Select your skills</p>
-          </div>
-
-          <div className="space-y-3">
-            {skillOptions.map((skill) => (
-              <button
-                key={skill.id}
-                onClick={() => toggleSkill(skill.id)}
-                className={`w-full flex items-center gap-4 p-5 rounded-2xl border text-left transition-all ${
-                  selectedSkills.includes(skill.id)
-                    ? 'bg-emerald-600/20 border-emerald-500/50'
-                    : 'bg-white/5 border-white/10 hover:border-white/20'
-                }`}
-              >
-                <span className="text-2xl">{skill.icon}</span>
-                <div className="font-semibold text-white text-base">{skill.label}</div>
-                {selectedSkills.includes(skill.id) && <CheckCircle className="w-5 h-5 text-emerald-400 ml-auto" />}
+        {/* Step 3: Skills */}
+        {step === 3 && (
+          <div className="card p-8 space-y-5">
+            <div>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#2D2D2D', marginBottom: 4 }}>कौशल व क्षमताएं (Functional Skills)</h2>
+              <p style={{ fontSize: 13, color: '#4B5563' }}>Select all functional abilities that apply</p>
+            </div>
+            {skillOptions.map(s => (
+              <button key={s.id} onClick={() => toggleSkill(s.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 16, padding: '16px 18px', borderRadius: 8, cursor: 'pointer',
+                border: `1.5px solid ${skills.includes(s.id) ? '#15803D' : '#D1DAE8'}`,
+                background: skills.includes(s.id) ? '#DCFCE7' : '#FFFFFF',
+                width: '100%', textAlign: 'left', transition: 'all 0.15s'
+              }}>
+                <span style={{ fontSize: 22 }}>{s.emoji}</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: skills.includes(s.id) ? '#15803D' : '#2D2D2D', flex: 1 }}>{s.label}</span>
+                {skills.includes(s.id) && <CheckCircle size={18} color="#15803D" />}
               </button>
             ))}
-          </div>
 
-          <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className="btn-secondary flex-1">← Wapas</button>
-            <button onClick={() => setStep(4)} className="btn-primary flex-1 text-lg">Register Karein ✓</button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setStep(2)} className="btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>← वापस</button>
+              <button onClick={() => setStep(4)} className="btn-blue" style={{ flex: 2, justifyContent: 'center', fontSize: 15, padding: 12 }}>पंजीकरण पूर्ण करें ✓</button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Step 4: Done */}
-      {step === 4 && (
-        <div className="glass-card p-8 text-center space-y-6 border border-emerald-500/30 animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto border-2 border-emerald-500/50">
-            <CheckCircle className="w-10 h-10 text-emerald-400" />
-          </div>
-          <div>
-            <h2 className="text-3xl font-black text-white mb-2">Badhaai Ho! 🎉</h2>
-            <p className="text-emerald-400 font-semibold text-lg">Registration Safal Hua!</p>
-            <p className="text-slate-400 text-sm mt-2">Congratulations! Your profile has been created successfully.</p>
-          </div>
+        {/* Step 4: Completion */}
+        {step === 4 && (
+          <div className="card p-8 text-center" style={{ border: '1.5px solid #A7F3D0' }}>
+            <div style={{ width: 60, height: 60, borderRadius: '50%', background: '#DCFCE7', border: '1.5px solid #A7F3D0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
+              <CheckCircle size={28} color="#15803D" />
+            </div>
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#2D2D2D', marginBottom: 4 }}>बधाई हो! 🎉</h2>
+            <p style={{ fontSize: 14, color: '#15803D', marginBottom: 24, fontWeight: 600 }}>पंजीकरण सफलतापूर्वक दर्ज हुआ (Registration Successful)</p>
 
-          <div className="bg-slate-800/60 rounded-2xl p-5 text-left space-y-3">
-            <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Your Profile Summary</div>
-            <div className="flex justify-between text-sm"><span className="text-slate-400">Language</span><span className="text-white font-medium">{selectedLang}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-400">District</span><span className="text-white font-medium">Ajmer, Rajasthan</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-400">Disability Type</span><span className="text-white font-medium capitalize">{selectedDisability || 'Not specified'}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-400">Skills recorded</span><span className="text-white font-medium">{selectedSkills.length} selected</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-400">Platform ID</span><span className="text-emerald-400 font-mono font-medium">EMP-AJM-{Math.floor(Math.random() * 90000 + 10000)}</span></div>
-          </div>
+            <div className="card p-6" style={{ textAlign: 'left', marginBottom: 20, background: '#F5F7FA' }}>
+              <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 14 }}>Profile Overview</div>
+              {[
+                ['Language Selected', lang],
+                ['District', 'Ajmer, Rajasthan'],
+                ['Disability Classification', disabilityOptions.find(d => d.id === disability)?.sub || 'Not specified'],
+                ['Skills Recorded', `${skills.length} functional capabilities registered`],
+                ['Platform Registration ID', platformId],
+              ].map(([k, v]) => (
+                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid #D1DAE8', fontSize: 13.5 }}>
+                  <span style={{ color: '#4B5563' }}>{k}</span>
+                  <span style={{ color: k === 'Platform Registration ID' ? '#0056B3' : '#2D2D2D', fontWeight: 700, fontFamily: k === 'Platform Registration ID' ? 'monospace' : 'inherit' }}>{v}</span>
+                </div>
+              ))}
+            </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-left">
-            <div className="font-semibold text-blue-300 text-sm mb-1">Agle Kadam (Next Steps):</div>
-            <ul className="text-slate-400 text-sm space-y-1">
-              <li>✦ AI match results within 24–48 hours</li>
-              <li>✦ SMS notification on your mobile number</li>
-              <li>✦ Nearest vocational centre will contact you</li>
-              <li>✦ Certificate facilitation (if needed) will start</li>
-            </ul>
-          </div>
+            <div style={{ padding: '14px 18px', background: '#E8F0FA', border: '1px solid #BFDBFE', borderRadius: 8, fontSize: 13, color: '#0056B3', lineHeight: 1.7, textAlign: 'left', marginBottom: 20 }}>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>अगले चरण (Next Steps):</div>
+              <div>• 24 से 48 घंटे में उपयुक्त नौकरियों की SMS अधिसूचना भेजी जाएगी।</div>
+              <div>• स्थानीय रोजगार अधिकारी अथवा CSC संचालक से सत्यापन संपर्क होगा।</div>
+              <div>• आवश्यकता पड़ने पर अनुकूलन व कौशल सहायता उपलब्ध कराई जाएगी।</div>
+            </div>
 
-          <button className="w-full btn-primary text-lg py-4">
-            Download Receipt / QR Card
-          </button>
-        </div>
-      )}
+            <button className="btn-blue" style={{ width: '100%', justifyContent: 'center', padding: '13px', fontSize: 15 }}>
+              पावती रसीद डाउनलोड करें (Download Slip)
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

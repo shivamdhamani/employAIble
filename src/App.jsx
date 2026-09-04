@@ -10,15 +10,15 @@ import CSCOnboarding from './pages/CSCOnboarding'
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen animated-bg dot-grid">
+      <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
         <Navbar />
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/"          element={<LandingPage />} />
           <Route path="/candidate" element={<CandidatePortal />} />
-          <Route path="/employer" element={<EmployerPortal />} />
-          <Route path="/government" element={<GovernmentDashboard />} />
-          <Route path="/ai-match" element={<AIMatchEngine />} />
-          <Route path="/csc" element={<CSCOnboarding />} />
+          <Route path="/employer"  element={<EmployerPortal />} />
+          <Route path="/government"element={<GovernmentDashboard />} />
+          <Route path="/ai-match"  element={<AIMatchEngine />} />
+          <Route path="/csc"       element={<CSCOnboarding />} />
         </Routes>
       </div>
     </BrowserRouter>

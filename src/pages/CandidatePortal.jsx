@@ -1,516 +1,385 @@
 import { useState } from 'react'
-import { 
-  Mic, Volume2, CheckCircle, ChevronRight, MapPin, 
-  Accessibility, Eye, Ear, Hand, Brain, Wifi, WifiOff,
-  Star, Clock, IndianRupee, TrendingUp, AlertCircle,
-  User, Phone, FileText, Briefcase
-} from 'lucide-react'
+import { CheckCircle, ChevronRight, Eye, Ear, Accessibility, Brain, Wifi, WifiOff, AlertCircle, Mic, Volume2, MapPin } from 'lucide-react'
 
 const disabilityTypes = [
-  { id: 'visual', label: 'Visual Impairment', icon: Eye, color: 'blue' },
-  { id: 'hearing', label: 'Hearing Impairment', icon: Ear, color: 'purple' },
-  { id: 'locomotor', label: 'Locomotor Disability', icon: Accessibility, color: 'orange' },
-  { id: 'cognitive', label: 'Autism / Intellectual', icon: Brain, color: 'pink' },
+  { id: 'visual', label: 'Visual Impairment', sub: 'Includes low vision & blindness', icon: Eye, accent: '#0056B3' },
+  { id: 'hearing', label: 'Hearing Impairment', sub: 'Includes deaf & hard of hearing', icon: Ear, accent: '#6D28D9' },
+  { id: 'locomotor', label: 'Locomotor Disability', sub: 'Mobility or limb impairment', icon: Accessibility, accent: '#0E7490' },
+  { id: 'cognitive', label: 'Autism / Intellectual', sub: 'Cognitive or intellectual disability', icon: Brain, accent: '#B45309' },
+]
+
+const certOptions = [
+  { id: 'verified', label: 'UDID verified', sub: 'Certificate confirmed', dot: '#15803D' },
+  { id: 'pending', label: 'Certification pending', sub: 'Applied, awaiting issuance', dot: '#B45309' },
+  { id: 'none', label: 'No certificate yet', sub: 'We can help you get certified', dot: '#B91C1C' },
+]
+
+const accessNeeds = [
+  { id: 'screenreader', label: 'Screen reader required', sub: 'NVDA, JAWS, or system reader' },
+  { id: 'ramp', label: 'Wheelchair / ramp access', sub: 'Ground floor or lift essential' },
+  { id: 'interpreter', label: 'Sign language interpreter', sub: 'For meetings and communications' },
+  { id: 'flexshift', label: 'Flexible shift timing', sub: 'Fixed hours not feasible' },
+  { id: 'remote', label: 'Remote work preferred', sub: 'Partial or full WFH' },
+  { id: 'workstation', label: 'Modified workstation', sub: 'Ergonomic or adapted setup' },
 ]
 
 const matchResults = [
   {
-    id: 1,
     title: 'Data Entry Operator',
-    company: 'Rajasthan State Cooperative',
-    location: 'Ajmer (4.2 km)',
-    type: 'Government',
-    scores: {
-      skillMatch: 92,
-      travelFeasibility: 78,
-      accessibilityScore: 84,
-      screenReaderCompat: 91,
-      accommodationLevel: 'Low',
-      estimatedCost: 4200,
-      shiftCompatibility: 88,
-      spp: 87,
-    },
-    tags: ['Screen-reader friendly', 'Keyboard navigation', 'Flexible hours'],
-    salary: '18,000–22,000',
+    org: 'Rajasthan State Cooperative Bank',
+    location: 'Ajmer · 4.2 km',
     mode: 'Hybrid',
-    color: 'emerald',
+    type: 'Government',
+    spp: 87,
+    dims: [
+      { label: 'Skill match', val: 92, color: '#0056B3' },
+      { label: 'Travel feasibility', val: 78, color: '#0056B3' },
+      { label: 'Workplace accessibility', val: 84, color: '#0E7490' },
+      { label: 'Assistive tech compat.', val: 91, color: '#0E7490' },
+      { label: 'Shift compatibility', val: 88, color: '#15803D' }
+    ],
+    accommodation: 'Minimal',
+    cost: '₹4,200/yr',
+    tags: ['Screen reader ready', 'Keyboard nav', 'Flex hours'],
+    salary: '₹18,000 – ₹22,000'
   },
   {
-    id: 2,
     title: 'Remote Customer Support',
-    company: 'TechSeva Solutions',
-    location: 'Remote (Work from Home)',
-    type: 'Private MSME',
-    scores: {
-      skillMatch: 85,
-      travelFeasibility: 100,
-      accessibilityScore: 72,
-      screenReaderCompat: 78,
-      accommodationLevel: 'Minimal',
-      estimatedCost: 1500,
-      shiftCompatibility: 65,
-      spp: 79,
-    },
-    tags: ['Work from home', 'Regional language', 'Voice interface'],
-    salary: '14,000–18,000',
+    org: 'TechSeva Solutions Pvt. Ltd.',
+    location: 'Remote · Work from home',
     mode: 'Remote',
-    color: 'blue',
+    type: 'Private',
+    spp: 79,
+    dims: [
+      { label: 'Skill match', val: 85, color: '#0056B3' },
+      { label: 'Travel feasibility', val: 100, color: '#0E7490' },
+      { label: 'Workplace accessibility', val: 72, color: '#0E7490' },
+      { label: 'Assistive tech compat.', val: 78, color: '#0E7490' },
+      { label: 'Shift compatibility', val: 62, color: '#B45309' }
+    ],
+    accommodation: 'Minimal',
+    cost: '₹1,500/yr',
+    tags: ['Work from home', 'Voice interface', 'Hindi support'],
+    salary: '₹14,000 – ₹18,000'
   },
   {
-    id: 3,
     title: 'Digital Bookkeeping Assistant',
-    company: 'Ajmer Traders Association',
-    location: 'Ajmer (1.8 km)',
-    type: 'MSME',
-    scores: {
-      skillMatch: 78,
-      travelFeasibility: 95,
-      accessibilityScore: 61,
-      screenReaderCompat: 55,
-      accommodationLevel: 'Moderate',
-      estimatedCost: 8500,
-      shiftCompatibility: 90,
-      spp: 63,
-    },
-    tags: ['Near home', 'Tally compatible', 'Ramp access'],
-    salary: '12,000–15,000',
+    org: 'Ajmer Traders Association',
+    location: 'Ajmer · 1.8 km',
     mode: 'On-site',
-    color: 'orange',
+    type: 'MSME',
+    spp: 63,
+    dims: [
+      { label: 'Skill match', val: 78, color: '#0056B3' },
+      { label: 'Travel feasibility', val: 95, color: '#0E7490' },
+      { label: 'Workplace accessibility', val: 54, color: '#B91C1C' },
+      { label: 'Assistive tech compat.', val: 55, color: '#B91C1C' },
+      { label: 'Shift compatibility', val: 90, color: '#15803D' }
+    ],
+    accommodation: 'Moderate',
+    cost: '₹8,500/yr',
+    tags: ['Near home', 'Tally compatible', 'Ramp needed'],
+    salary: '₹12,000 – ₹15,000'
   },
 ]
 
-function ScoreRing({ value, size = 80, color = '#3b82f6', label }) {
-  const radius = 30
-  const circumference = 2 * Math.PI * radius
-  const dashOffset = circumference - (value / 100) * circumference
-
+function SPPRing({ value }) {
+  const r = 28, circ = 2 * Math.PI * r
+  const color = value >= 80 ? '#15803D' : value >= 65 ? '#B45309' : '#B91C1C'
   return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width={size} height={size} viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r={radius} fill="none" stroke="#1e293b" strokeWidth="8" />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+      <svg width={72} height={72} viewBox="0 0 72 72">
+        <circle cx={36} cy={36} r={r} fill="none" stroke="#EEF2F7" strokeWidth={6} />
         <circle
-          cx="40" cy="40" r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="8"
-          strokeDasharray={circumference}
-          strokeDashoffset={dashOffset}
-          strokeLinecap="round"
-          transform="rotate(-90 40 40)"
-          style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+          cx={36} cy={36} r={r} fill="none" stroke={color} strokeWidth={6}
+          strokeDasharray={circ} strokeDashoffset={circ * (1 - value / 100)}
+          strokeLinecap="round" transform="rotate(-90 36 36)"
+          style={{ transition: 'stroke-dashoffset 1.1s ease' }}
         />
-        <text x="40" y="44" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">{value}%</text>
+        <text x={36} y={41} textAnchor="middle" fill="#2D2D2D" fontSize={13} fontWeight={800}>{value}%</text>
       </svg>
-      {label && <span className="text-xs text-slate-400 text-center leading-tight">{label}</span>}
+      <span style={{ fontSize: 11, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '.05em' }}>SPP</span>
     </div>
   )
 }
 
-function ScoreBar({ label, value, color, isNew = false }) {
-  const colorMap = {
-    emerald: 'bg-emerald-500',
-    blue: 'bg-blue-500',
-    purple: 'bg-purple-500',
-    orange: 'bg-orange-500',
-    cyan: 'bg-cyan-500',
-    pink: 'bg-pink-500',
-    yellow: 'bg-yellow-500',
-  }
+function DimBar({ label, val, color }) {
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-400 flex items-center gap-1">
-          {isNew && <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-600/30 text-blue-300 border border-blue-500/30">NEW</span>}
-          {label}
-        </span>
-        <span className="text-white font-semibold">{value}%</span>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+        <span style={{ fontSize: 12, color: '#4B5563' }}>{label}</span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#2D2D2D' }}>{val}%</span>
       </div>
-      <div className="score-bar">
-        <div className={`score-fill ${colorMap[color] || 'bg-blue-500'}`} style={{ width: `${value}%` }} />
+      <div style={{ height: 6, background: '#EEF2F7', borderRadius: 3, overflow: 'hidden' }}>
+        <div style={{ width: `${val}%`, height: '100%', background: color, borderRadius: 3, transition: 'width .8s ease' }} />
       </div>
     </div>
   )
 }
 
 function JobCard({ job }) {
-  const [expanded, setExpanded] = useState(false)
-  const sppColor = job.scores.spp >= 80 ? 'text-emerald-400' : job.scores.spp >= 65 ? 'text-yellow-400' : 'text-orange-400'
-  const sppBg = job.scores.spp >= 80 ? 'bg-emerald-500/10 border-emerald-500/30' : job.scores.spp >= 65 ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-orange-500/10 border-orange-500/30'
-  const sppRingColor = job.scores.spp >= 80 ? '#22c55e' : job.scores.spp >= 65 ? '#f59e0b' : '#f97316'
+  const [open, setOpen] = useState(false)
+  const sppColor = job.spp >= 80 ? '#15803D' : job.spp >= 65 ? '#B45309' : '#B91C1C'
+  const typeBadge = job.type === 'Government' ? 'badge-blue' : job.type === 'MSME' ? 'badge-amber' : 'badge-gray'
+  const modeBadge = job.mode === 'Remote' ? 'badge-teal' : job.mode === 'Hybrid' ? 'badge-indigo' : 'badge-gray'
 
   return (
-    <div className="glass-card p-6 space-y-4 hover:bg-white/[0.07] transition-colors">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${
-              job.type === 'Government' ? 'bg-blue-500/10 border-blue-500/30 text-blue-300' :
-              'bg-purple-500/10 border-purple-500/30 text-purple-300'
-            }`}>{job.type}</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              job.mode === 'Remote' ? 'bg-emerald-500/10 text-emerald-300' :
-              job.mode === 'Hybrid' ? 'bg-cyan-500/10 text-cyan-300' :
-              'bg-slate-500/10 text-slate-400'
-            }`}>{job.mode}</span>
-          </div>
-          <h3 className="font-bold text-white text-xl">{job.title}</h3>
-          <p className="text-slate-400 text-sm">{job.company}</p>
-          <div className="flex items-center gap-1 text-slate-500 text-xs mt-1">
-            <MapPin className="w-3 h-3" /> {job.location}
-          </div>
-        </div>
-        <div className={`flex flex-col items-center p-3 rounded-2xl border ${sppBg}`}>
-          <ScoreRing value={job.scores.spp} size={72} color={sppRingColor} />
-          <span className={`text-xs font-bold mt-1 ${sppColor}`}>SPP Score</span>
-        </div>
-      </div>
-
-      {/* Tags */}
-      <div className="flex flex-wrap gap-2">
-        {job.tags.map((tag) => (
-          <span key={tag} className="tag-pill bg-slate-800 border-slate-700 text-slate-300">{tag}</span>
-        ))}
-      </div>
-
-      {/* Mini scores */}
-      <div className="grid grid-cols-2 gap-3">
-        <ScoreBar label="Skill Match" value={job.scores.skillMatch} color="blue" />
-        <ScoreBar label="Travel Feasibility" value={job.scores.travelFeasibility} color="cyan" />
-        <ScoreBar label="Workplace Accessibility" value={job.scores.accessibilityScore} color="emerald" isNew />
-        <ScoreBar label="Screen-Reader Compat." value={job.scores.screenReaderCompat} color="purple" isNew />
-      </div>
-
-      {/* Expanded scores */}
-      {expanded && (
-        <div className="pt-4 border-t border-white/10 space-y-3 animate-fade-in">
-          <div className="grid grid-cols-2 gap-3">
-            <ScoreBar label="Shift Compatibility" value={job.scores.shiftCompatibility} color="orange" isNew />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="glass-card p-3 text-center">
-              <div className="text-slate-400 text-xs mb-1">Accommodation Level</div>
-              <div className={`font-bold text-sm ${
-                job.scores.accommodationLevel === 'Low' ? 'text-emerald-400' :
-                job.scores.accommodationLevel === 'Minimal' ? 'text-green-400' :
-                'text-yellow-400'
-              }`}>{job.scores.accommodationLevel}</div>
+    <div className="card" style={{ overflow: 'hidden', borderTop: `4px solid ${sppColor}` }}>
+      <div style={{ padding: '20px 22px 16px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, marginBottom: 12 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+              <span className={`badge ${typeBadge}`}>{job.type}</span>
+              <span className={`badge ${modeBadge}`}>{job.mode}</span>
             </div>
-            <div className="glass-card p-3 text-center">
-              <div className="text-slate-400 text-xs mb-1">Est. Accommodation Cost</div>
-              <div className="font-bold text-sm text-white flex items-center justify-center gap-0.5">
-                <IndianRupee className="w-3 h-3" />{job.scores.estimatedCost.toLocaleString('en-IN')}/yr
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#2D2D2D', marginBottom: 4 }}>{job.title}</div>
+            <div style={{ fontSize: 13, color: '#4B5563' }}>{job.org}</div>
+            <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <MapPin size={13} color="#6B7280" /> {job.location}
+            </div>
+          </div>
+          <SPPRing value={job.spp} />
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+          {job.tags.map(t => <span key={t} className="badge badge-gray">{t}</span>)}
+        </div>
+
+        <div style={{ display: 'grid', gap: 10 }}>
+          {job.dims.slice(0, 3).map(d => <DimBar key={d.label} {...d} />)}
+        </div>
+      </div>
+
+      {open && (
+        <div style={{ borderTop: '1px solid #D1DAE8', padding: '18px 22px', background: '#F5F7FA', display: 'grid', gap: 10 }}>
+          {job.dims.slice(3).map(d => <DimBar key={d.label} {...d} />)}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 10 }}>
+            {[
+              { k: 'Accommodation', v: job.accommodation, c: job.accommodation === 'Minimal' ? '#15803D' : '#B45309' },
+              { k: 'Est. annual cost', v: job.cost, c: '#2D2D2D' },
+              { k: 'Salary range', v: job.salary, c: '#2D2D2D' },
+            ].map(item => (
+              <div key={item.k} style={{ background: '#FFFFFF', borderRadius: 8, border: '1px solid #D1DAE8', padding: '12px 14px' }}>
+                <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 4 }}>{item.k}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: item.c }}>{item.v}</div>
               </div>
-            </div>
-          </div>
-          <div className="glass-card p-3">
-            <div className="text-slate-400 text-xs mb-1">Salary Range</div>
-            <div className="font-bold text-white flex items-center gap-0.5">
-              <IndianRupee className="w-3.5 h-3.5" />{job.salary}/month
-            </div>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-3 pt-2">
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="flex-1 btn-secondary text-sm py-2 flex items-center justify-center gap-2"
-        >
-          {expanded ? 'Show Less' : 'Full Analysis'} <ChevronRight className={`w-4 h-4 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+      <div style={{ borderTop: '1px solid #D1DAE8', padding: '14px 20px', display: 'flex', gap: 12, background: '#FFFFFF' }}>
+        <button onClick={() => setOpen(!open)} className="btn-ghost btn-sm" style={{ flex: 1, justifyContent: 'center' }}>
+          {open ? 'Hide details' : 'Full breakdown'}
         </button>
-        <button className="flex-1 btn-primary text-sm py-2">
-          Apply Now
-        </button>
+        <button className="btn-blue btn-sm" style={{ flex: 1, justifyContent: 'center' }}>Apply</button>
       </div>
     </div>
   )
 }
 
 export default function CandidatePortal() {
-  const [step, setStep] = useState(0) // 0=profile, 1=capabilities, 2=results
-  const [voiceMode, setVoiceMode] = useState(false)
-  const [selectedDisability, setSelectedDisability] = useState('visual')
-  const [udidStatus, setUdidStatus] = useState('verified')
-  const [commuteRadius, setCommuteRadius] = useState(10)
-  const [showResults, setShowResults] = useState(false)
-
-  const steps = ['Profile & Disability', 'Functional Capabilities', 'AI Match Results']
+  const [step, setStep] = useState(0)
+  const [disability, setDisability] = useState('visual')
+  const [cert, setCert] = useState('verified')
+  const [commute, setCommute] = useState(10)
+  const [needs, setNeeds] = useState(['screenreader'])
+  const [voice, setVoice] = useState(false)
+  const toggleNeed = id => setNeeds(p => p.includes(id) ? p.filter(n => n !== id) : [...p, id])
+  const steps = ['Profile', 'Capabilities', 'Matches']
 
   return (
-    <div className="pt-24 pb-16 px-4 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="mb-10 flex items-start justify-between flex-wrap gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <User className="w-5 h-5 text-blue-400" />
-            <span className="text-blue-400 text-sm font-semibold uppercase tracking-wider">Candidate Portal</span>
+    <div style={{ paddingTop: 58 }} className="page-in">
+      <div className="max-w-5xl mx-auto px-5 py-12">
+
+        {/* Header */}
+        <div style={{ marginBottom: 32, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div className="section-label" style={{ marginBottom: 8 }}>Candidate Platform</div>
+            <h1 style={{ fontSize: 30, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.025em', marginBottom: 8 }}>Find work that actually fits</h1>
+            <p style={{ fontSize: 15, color: '#4B5563', maxWidth: 480, lineHeight: 1.7 }}>
+              We profile your functional capabilities — not just your skills — and match you to roles you can genuinely sustain.
+            </p>
           </div>
-          <h1 className="text-4xl font-black text-white mb-2">Your <span className="gradient-text">Inclusive Career</span></h1>
-          <p className="text-slate-400">Find jobs matched to your actual functional capabilities — not just your resume.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setVoiceMode(!voiceMode)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${
-              voiceMode
-                ? 'bg-blue-600/20 border-blue-500/50 text-blue-300'
-                : 'bg-white/5 border-white/20 text-slate-400'
-            }`}
-          >
-            {voiceMode ? <Volume2 className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            {voiceMode ? 'Voice Mode ON' : 'Voice Mode'}
+          <button onClick={() => setVoice(!voice)} className={voice ? 'btn-blue btn-sm' : 'btn-light btn-sm'} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {voice ? <Volume2 size={15} /> : <Mic size={15} />}
+            {voice ? 'Voice guidance on' : 'Voice guide'}
           </button>
-          <div className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
-            <Wifi className="w-3.5 h-3.5" /> Online
-          </div>
         </div>
-      </div>
 
-      {/* Stepper */}
-      <div className="flex items-center gap-2 mb-8">
-        {steps.map((s, i) => (
-          <div key={i} className="flex items-center gap-2 flex-1">
-            <button
-              onClick={() => { if (i < step || showResults) setStep(i) }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                step === i ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' :
-                i < step || showResults ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' :
-                'bg-white/5 text-slate-500'
-              }`}
-            >
-              {i < step || showResults ? <CheckCircle className="w-4 h-4" /> : <span className="w-5 h-5 rounded-full bg-white/10 text-xs flex items-center justify-center">{i+1}</span>}
-              <span className="hidden sm:inline">{s}</span>
-            </button>
-            {i < steps.length - 1 && <div className={`flex-1 h-0.5 rounded-full ${i < step ? 'bg-emerald-500' : 'bg-white/10'}`} />}
-          </div>
-        ))}
-      </div>
+        {/* Stepper */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #D1DAE8' }}>
+          {steps.map((s, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+              <button onClick={() => step > i && setStep(i)} style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', cursor: step > i ? 'pointer' : 'default', padding: '4px 0' }}>
+                <div className={`step-dot ${i < step ? 'step-dot-done' : i === step ? 'step-dot-active' : 'step-dot-pending'}`}>
+                  {i < step ? <CheckCircle size={14} /> : i + 1}
+                </div>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: i === step ? '#0056B3' : i < step ? '#15803D' : '#6B7280' }}>{s}</span>
+              </button>
+              {i < steps.length - 1 && <div style={{ width: 56, height: 2, background: i < step ? '#15803D' : '#D1DAE8', margin: '0 14px', borderRadius: 1 }} />}
+            </div>
+          ))}
+        </div>
 
-      {/* Step 0: Profile */}
-      {step === 0 && (
-        <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
-          <div className="glass-card p-6 space-y-5">
-            <h2 className="font-bold text-white text-xl flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-400" /> Personal Profile
-            </h2>
-            <div className="space-y-4">
+        {/* Step 0 */}
+        {step === 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div className="card p-7" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D' }}>Basic information</div>
               <div>
-                <label className="text-slate-400 text-sm mb-1.5 block">Full Name</label>
-                <input defaultValue="Ramesh Kumar Sharma" className="w-full bg-slate-800/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+                <label className="label">Full name</label>
+                <input className="input" defaultValue="Ramesh Kumar Sharma" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-slate-400 text-sm mb-1.5 block">District</label>
-                  <input defaultValue="Ajmer" className="w-full bg-slate-800/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500" />
-                </div>
-                <div>
-                  <label className="text-slate-400 text-sm mb-1.5 block">State</label>
-                  <input defaultValue="Rajasthan" className="w-full bg-slate-800/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500" />
-                </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div><label className="label">District</label><input className="input" defaultValue="Ajmer" /></div>
+                <div><label className="label">State</label><input className="input" defaultValue="Rajasthan" /></div>
               </div>
               <div>
-                <label className="text-slate-400 text-sm mb-1.5 block">Commute Radius: <span className="text-white font-bold">{commuteRadius} km</span></label>
-                <input
-                  type="range" min="1" max="50" value={commuteRadius}
-                  onChange={e => setCommuteRadius(parseInt(e.target.value))}
-                  className="w-full accent-blue-500"
-                />
-                <div className="flex justify-between text-xs text-slate-600 mt-1">
+                <label className="label">Max commute distance — <span style={{ color: '#0056B3', fontWeight: 700 }}>{commute} km</span></label>
+                <input type="range" min={1} max={50} value={commute} onChange={e => setCommute(+e.target.value)} style={{ width: '100%', accentColor: '#0056B3', marginTop: 8 }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6B7280', marginTop: 4 }}>
                   <span>1 km</span><span>25 km</span><span>50 km</span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="space-y-6">
-            {/* Disability type */}
-            <div className="glass-card p-6 space-y-4">
-              <h2 className="font-bold text-white text-xl flex items-center gap-2">
-                <Accessibility className="w-5 h-5 text-purple-400" /> Disability Type
-              </h2>
-              <div className="grid grid-cols-2 gap-3">
-                {disabilityTypes.map((d) => (
-                  <button
-                    key={d.id}
-                    onClick={() => setSelectedDisability(d.id)}
-                    className={`flex items-center gap-3 p-3 rounded-xl border text-sm font-medium transition-all ${
-                      selectedDisability === d.id
-                        ? 'bg-blue-600/20 border-blue-500/50 text-blue-300'
-                        : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20'
-                    }`}
-                  >
-                    <d.icon className="w-4 h-4 shrink-0" />
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* UDID status */}
-            <div className="glass-card p-6 space-y-4">
-              <h2 className="font-bold text-white text-xl flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-400" /> UDID / Disability Certificate
-              </h2>
-              <div className="space-y-2">
-                {[
-                  { id: 'verified', label: 'Verified (UDID available)', icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/30' },
-                  { id: 'pending', label: 'Pending certification', icon: Clock, color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/30' },
-                  { id: 'none', label: 'No certificate yet', icon: AlertCircle, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/30' },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => setUdidStatus(opt.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl border text-sm transition-all ${
-                      udidStatus === opt.id ? `${opt.bg} ${opt.color}` : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
-                    }`}
-                  >
-                    <opt.icon className="w-4 h-4 shrink-0" />
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-              {udidStatus === 'none' && (
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-blue-300 text-xs">
-                  💡 EmployAIable can help you get certified via your nearest CSC/District Rehabilitation Centre. <button className="underline font-semibold">Start process →</button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="md:col-span-2 flex justify-end">
-            <button onClick={() => setStep(1)} className="btn-primary flex items-center gap-2">
-              Next: Functional Capabilities <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 1: Functional Capabilities */}
-      {step === 1 && (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-card p-6">
-            <h2 className="font-bold text-white text-xl mb-2 flex items-center gap-2">
-              <Brain className="w-5 h-5 text-purple-400" /> Functional Capability Profiling
-            </h2>
-            <p className="text-slate-400 text-sm mb-6">
-              Not what you know — but <strong className="text-white">how you can work</strong>. This creates your unique functional capability profile.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Digital skills */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-slate-300 text-sm uppercase tracking-wider">Digital Skills</h3>
-                {[
-                  { label: 'Computer / Laptop usage', example: 'e.g. via screen reader / keyboard-only' },
-                  { label: 'Data Entry (Excel / Tally)', example: 'e.g. with keyboard shortcuts' },
-                  { label: 'Email / Communication tools', example: 'e.g. with voice-to-text' },
-                  { label: 'Internet browsing', example: 'e.g. with screen magnification' },
-                ].map((skill, i) => (
-                  <div key={i} className="bg-slate-800/60 rounded-xl p-4">
-                    <div className="flex items-start justify-between gap-3 mb-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div className="card p-7">
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 14 }}>Disability type</div>
+                <div style={{ display: 'grid', gap: 10 }}>
+                  {disabilityTypes.map(d => (
+                    <button key={d.id} onClick={() => setDisability(d.id)} style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 8, cursor: 'pointer', textAlign: 'left', width: '100%',
+                      border: `1.5px solid ${disability === d.id ? '#0056B3' : '#D1DAE8'}`,
+                      background: disability === d.id ? '#E8F0FA' : '#FFFFFF',
+                      transition: 'all .15s'
+                    }}>
+                      <d.icon size={18} color={disability === d.id ? '#0056B3' : '#6B7280'} />
                       <div>
-                        <div className="text-white text-sm font-medium">{skill.label}</div>
-                        <div className="text-slate-500 text-xs">{skill.example}</div>
+                        <div style={{ fontSize: 13.5, fontWeight: 600, color: disability === d.id ? '#0056B3' : '#2D2D2D' }}>{d.label}</div>
+                        <div style={{ fontSize: 11.5, color: '#4B5563', marginTop: 1 }}>{d.sub}</div>
                       </div>
-                      <div className="flex gap-1 shrink-0">
-                        {['No', 'Partial', 'Yes'].map((opt) => (
-                          <button key={opt} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-all ${
-                            opt === 'Yes' ? 'bg-emerald-600/30 border-emerald-500/50 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white'
-                          }`}>{opt}</button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Accessibility needs */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-slate-300 text-sm uppercase tracking-wider">Accessibility Needs</h3>
+              <div className="card p-7">
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 14 }}>Certificate status</div>
+                <div style={{ display: 'grid', gap: 10 }}>
+                  {certOptions.map(c => (
+                    <button key={c.id} onClick={() => setCert(c.id)} style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 8, cursor: 'pointer', textAlign: 'left', width: '100%',
+                      border: `1.5px solid ${cert === c.id ? c.dot : '#D1DAE8'}`,
+                      background: cert === c.id ? '#F5F7FA' : '#FFFFFF', transition: 'all .15s'
+                    }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.dot, flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#2D2D2D' }}>{c.label}</div>
+                        <div style={{ fontSize: 11.5, color: '#4B5563', marginTop: 1 }}>{c.sub}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                {cert === 'none' && (
+                  <div style={{ marginTop: 12, padding: '12px 14px', background: '#E8F0FA', border: '1px solid #BFDBFE', borderRadius: 8, fontSize: 12.5, color: '#0056B3', lineHeight: 1.6 }}>
+                    We will connect you to your nearest District Rehabilitation Centre to initiate certification.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={() => setStep(1)} className="btn-blue">Continue <ChevronRight size={16} /></button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1 */}
+        {step === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div className="card p-7">
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#2D2D2D', marginBottom: 6 }}>Functional capability profiling</div>
+              <p style={{ fontSize: 14, color: '#4B5563', lineHeight: 1.7, marginBottom: 20 }}>
+                Tell us <strong style={{ color: '#2D2D2D' }}>how</strong> you work, not just what you know.
+                A resume says "I know Excel." This informs employers: "I use Excel via NVDA screen reader with keyboard-only navigation."
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
-                  { label: 'Screen Reader Required', detail: 'NVDA / JAWS / system reader' },
-                  { label: 'Wheelchair / Ramp Access', detail: 'Ground-floor or lift essential' },
-                  { label: 'Sign Language Interpreter', detail: 'For meetings/interviews' },
-                  { label: 'Flexible Shift Timing', detail: 'Specific hours needed' },
-                  { label: 'Remote Work Preferred', detail: 'Full or partial WFH' },
-                  { label: 'Modified Workstation', detail: 'Ergonomic chair, adjusted desk' },
-                ].map((need, i) => (
-                  <div key={i} className="flex items-center justify-between gap-3 bg-slate-800/60 rounded-xl p-3">
+                  { label: 'Computer / laptop usage', note: 'Screen reader or keyboard-only navigation' },
+                  { label: 'Data entry (Excel / Tally)', note: 'Keyboard shortcuts, without mouse' },
+                  { label: 'Email and communication tools', note: 'Voice-to-text or magnification software' },
+                  { label: 'Internet browsing', note: 'Screen reader or high contrast mode' },
+                ].map((sk, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, padding: '14px 18px', background: '#F5F7FA', borderRadius: 8, border: '1px solid #D1DAE8' }}>
                     <div>
-                      <div className="text-white text-sm font-medium">{need.label}</div>
-                      <div className="text-slate-500 text-xs">{need.detail}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#2D2D2D' }}>{sk.label}</div>
+                      <div style={{ fontSize: 12, color: '#4B5563', marginTop: 2 }}>{sk.note}</div>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked={i < 2} className="sr-only peer" />
-                      <div className="w-10 h-5 bg-slate-700 peer-checked:bg-blue-600 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
-                    </label>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {[['No', '#B91C1C'], ['Partial', '#B45309'], ['Yes', '#15803D']].map(([opt, col]) => (
+                        <button key={opt} style={{
+                          padding: '6px 14px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                          border: `1.5px solid ${opt === 'Yes' ? col : '#D1DAE8'}`,
+                          background: opt === 'Yes' ? '#DCFCE7' : '#FFFFFF',
+                          color: opt === 'Yes' ? col : '#4B5563', transition: 'all .15s'
+                        }}>{opt}</button>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* The KEY differentiator box */}
-            <div className="mt-6 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-2xl p-5">
-              <div className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-3">✦ Functional Capability Statement — What this means for employers</div>
-              <div className="bg-slate-900/60 rounded-xl p-4 font-mono text-sm text-slate-300">
-                <span className="text-slate-500">A resume says: </span>
-                <span className="text-white">"I know Excel."</span>
-                <br /><br />
-                <span className="text-slate-500">EmployAIable says: </span>
-                <span className="text-emerald-300">"I can perform Excel-based data entry independently using NVDA screen reader, provided the company's CRM supports keyboard navigation and Tab-key traversal."</span>
+            <div className="card p-7">
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#2D2D2D', marginBottom: 14 }}>Accessibility requirements</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {accessNeeds.map(n => (
+                  <div key={n.id} onClick={() => toggleNeed(n.id)} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '13px 15px', background: '#F5F7FA', borderRadius: 8,
+                    border: `1.5px solid ${needs.includes(n.id) ? '#0056B3' : '#D1DAE8'}`, cursor: 'pointer', transition: 'border-color .15s'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: 13.5, fontWeight: 600, color: '#2D2D2D' }}>{n.label}</div>
+                      <div style={{ fontSize: 11.5, color: '#4B5563', marginTop: 1 }}>{n.sub}</div>
+                    </div>
+                    <div style={{ width: 20, height: 20, borderRadius: 5, border: `1.5px solid ${needs.includes(n.id) ? '#0056B3' : '#D1DAE8'}`, background: needs.includes(n.id) ? '#0056B3' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .15s' }}>
+                      {needs.includes(n.id) && <CheckCircle size={13} color="white" />}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
 
-          <div className="flex justify-between">
-            <button onClick={() => setStep(0)} className="btn-secondary">← Back</button>
-            <button onClick={() => { setStep(2); setShowResults(true) }} className="btn-primary flex items-center gap-2">
-              <Brain className="w-4 h-4" /> Run AI Match Engine <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Results */}
-      {step === 2 && (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-card p-6 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-blue-500/20">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center">
-                <Brain className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <div className="font-bold text-white">AI Match Complete</div>
-                <div className="text-slate-400 text-xs">Analysed 847 jobs in Ajmer district · 3 sustainable matches found</div>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="text-center">
-                <div className="text-2xl font-black text-blue-400">847</div>
-                <div className="text-xs text-slate-400">Jobs scanned</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-emerald-400">3</div>
-                <div className="text-xs text-slate-400">High-SPP matches</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-purple-400">87%</div>
-                <div className="text-xs text-slate-400">Best SPP score</div>
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <button onClick={() => setStep(0)} className="btn-ghost">← Back</button>
+              <button onClick={() => setStep(2)} className="btn-blue">Find matching jobs <ChevronRight size={16} /></button>
             </div>
           </div>
+        )}
 
-          <div className="space-y-4">
-            {matchResults.map((job) => <JobCard key={job.id} job={job} />)}
+        {/* Step 2 */}
+        {step === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ padding: '18px 24px', background: '#FFFFFF', borderRadius: 10, border: '1px solid #D1DAE8', display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center', boxShadow: '0 1px 4px rgba(0,0,0,.04)' }}>
+              {[
+                { k: 'Jobs analysed', v: '847', c: '#2D2D2D' },
+                { k: 'Sustainable matches', v: '3', c: '#15803D' },
+                { k: 'Best SPP score', v: '87%', c: '#0056B3' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>{item.k}</div>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: item.c, letterSpacing: '-0.025em' }}>{item.v}</div>
+                </div>
+              ))}
+              <div style={{ marginLeft: 'auto', fontSize: 12, color: '#6B7280' }}>Ajmer district · {new Date().toLocaleDateString('en-IN')}</div>
+            </div>
+            {matchResults.map((job, i) => <JobCard key={i} job={job} />)}
+            <div><button onClick={() => setStep(1)} className="btn-ghost">← Refine requirements</button></div>
           </div>
-
-          <div className="flex justify-start">
-            <button onClick={() => setStep(1)} className="btn-secondary">← Refine Capabilities</button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
