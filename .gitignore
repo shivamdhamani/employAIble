@@ -34,3 +34,9 @@ lerna-debug.log*
 
 # OS files
 Thumbs.db
+
+# Documents and presentations
+*.pptx
+*.pdf
+*.docx
+*.xlsx
