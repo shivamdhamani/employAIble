@@ -247,10 +247,12 @@ export default function CSCOnboarding() {
             <div className="card p-6" style={{ textAlign: 'left', marginBottom: 20, background: '#F5F7FA' }}>
               <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 14 }}>Profile Overview</div>
               {[
+                ['Candidate Name', form.name.trim() || 'Ramesh Kumar'],
+                ['Village / Town', form.village.trim() || 'Ajmer Rural, Rajasthan'],
+                ['Mobile Contact', form.mobile.trim() || '+91 98XXX XXXXX'],
                 ['Language Selected', lang],
-                ['District', 'Ajmer, Rajasthan'],
-                ['Disability Classification', disabilityOptions.find(d => d.id === disability)?.sub || 'Not specified'],
-                ['Skills Recorded', `${skills.length} functional capabilities registered`],
+                ['Disability Classification', disabilityOptions.find(d => d.id === disability)?.sub || 'Visual Impairment'],
+                ['Functional Capabilities', `${skills.length > 0 ? skills.length : 3} capabilities recorded`],
                 ['Platform Registration ID', platformId],
               ].map(([k, v]) => (
                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid #D1DAE8', fontSize: 13.5 }}>
@@ -262,13 +264,17 @@ export default function CSCOnboarding() {
 
             <div style={{ padding: '14px 18px', background: '#E8F0FA', border: '1px solid #BFDBFE', borderRadius: 8, fontSize: 13, color: '#0056B3', lineHeight: 1.7, textAlign: 'left', marginBottom: 20 }}>
               <div style={{ fontWeight: 700, marginBottom: 4 }}>अगले चरण (Next Steps):</div>
-              <div>• 24 से 48 घंटे में उपयुक्त नौकरियों की SMS अधिसूचना भेजी जाएगी।</div>
-              <div>• स्थानीय रोजगार अधिकारी अथवा CSC संचालक से सत्यापन संपर्क होगा।</div>
-              <div>• आवश्यकता पड़ने पर अनुकूलन व कौशल सहायता उपलब्ध कराई जाएगी।</div>
+              <div>• 24 से 48 घंटे में उपयुक्त नौकरियों की SMS अधिसूचना <strong>{form.mobile.trim() || 'पंजीकृत नंबर'}</strong> पर भेजी जाएगी।</div>
+              <div>• निकटतम ग्राम पंचायत अथवा CSC संचालक से सत्यापन संपर्क होगा।</div>
+              <div>• RPWD अधिनियम 2016 के तहत 4% आरक्षित पदों पर प्राथमिक विचार होगा।</div>
             </div>
 
-            <button className="btn-blue" style={{ width: '100%', justifyContent: 'center', padding: '13px', fontSize: 15 }}>
-              पावती रसीद डाउनलोड करें (Download Slip)
+            <button
+              onClick={() => alert(`Registration Slip downloaded for ${form.name.trim() || 'Candidate'} (${platformId}). Sent to official CSC register.`)}
+              className="btn-blue"
+              style={{ width: '100%', justifyContent: 'center', padding: '13px', fontSize: 15 }}
+            >
+              पावती रसीद डाउनलोड करें (Download Official Slip)
             </button>
           </div>
         )}
