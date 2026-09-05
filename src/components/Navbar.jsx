@@ -50,7 +50,20 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:flex" style={{ alignItems: 'center' }}>
+        <div className="hidden md:flex" style={{ alignItems: 'center', gap: 10 }}>
+          <Link
+            to="/login"
+            style={{
+              padding: '6px 14px', borderRadius: 7, fontSize: 13.5, textDecoration: 'none',
+              color: active('/login') ? '#0056B3' : '#4B5563',
+              background: active('/login') ? '#E8F0FA' : 'transparent',
+              fontWeight: 600, transition: 'all .15s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#0056B3'; e.currentTarget.style.background = '#F5F7FA' }}
+            onMouseLeave={e => { e.currentTarget.style.color = active('/login') ? '#0056B3' : '#4B5563'; e.currentTarget.style.background = active('/login') ? '#E8F0FA' : 'transparent' }}
+          >
+            Sign In
+          </Link>
           <Link to="/candidate" className="btn-blue btn-sm">Get started</Link>
         </div>
 
@@ -69,8 +82,23 @@ export default function Navbar() {
               background: active(link.path) ? '#E8F0FA' : 'transparent',
             }}>{link.label}</Link>
           ))}
-          <div style={{ marginTop: 10 }}>
-            <Link to="/candidate" className="btn-blue" style={{ display: 'flex', justifyContent: 'center' }}>Get started</Link>
+          <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="btn-light"
+              style={{ display: 'flex', justifyContent: 'center', fontWeight: 700 }}
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/candidate"
+              onClick={() => setOpen(false)}
+              className="btn-blue"
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              Get started
+            </Link>
           </div>
         </div>
       )}

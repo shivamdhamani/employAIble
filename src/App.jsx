@@ -7,6 +7,7 @@ import GovernmentDashboard from './pages/GovernmentDashboard'
 import AIMatchEngine from './pages/AIMatchEngine'
 import CSCOnboarding from './pages/CSCOnboarding'
 import CommunityPanel from './pages/CommunityPanel'
+import LoginPage from './pages/LoginPage'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/ai-match"   element={<AIMatchEngine />} />
           <Route path="/csc"        element={<CSCOnboarding />} />
           <Route path="/community"  element={<CommunityPanel />} />
+          <Route path="/login"      element={<LoginPage />} />
         </Routes>
       </div>
     </BrowserRouter>
