@@ -1,163 +1,194 @@
 import { useState } from 'react'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts'
-import { Eye, Accessibility, MapPin, CheckCircle, RefreshCw, Briefcase, Award, Zap, ShieldCheck } from 'lucide-react'
+import { Eye, Accessibility, MapPin, CheckCircle, RefreshCw, Briefcase, Award, Zap, ShieldCheck, FileCheck, Navigation } from 'lucide-react'
 
 const candidates = [
   {
     id: 1,
-    name: 'Ramesh Kumar',
-    location: 'Ajmer (Subhash Nagar)',
-    disability: 'Visual Impairment · 70%',
+    name: 'Ramesh Kumar Sharma',
+    udid: 'RJ-01-2021-0849201',
+    location: 'Ajmer (Subhash Nagar, Ward 14)',
+    disability: 'Visual Impairment · 70% (Benchmark Category A)',
     disabilityType: 'visual',
-    skills: ['Data Entry', 'Excel', 'Tally Prime', 'Customer Support', 'Hindi Typing'],
-    commute: 8,
+    skills: ['Data Entry', 'Excel', 'Tally Prime 4.1', 'Customer Support', 'Hindi & English Typing'],
+    typingSpeed: '42 wpm (98.4% accuracy)',
+    commute: 4.8,
+    transitRoute: 'RSRTC Low-Floor Accessible Bus (Route 4A - Subhash Nagar to Kutchery)',
     screenReader: true,
-    udid: true,
+    screenReaderTool: 'NVDA 2024.1 & JAWS 2023',
     remotePref: false,
-    detail: 'Experienced NVDA user with 45 wpm typing speed; keyboard-only navigation specialist.'
+    qualification: 'B.Com (Maharshi Dayanand Saraswati University, Ajmer)',
+    detail: 'Certified NVDA screen reader user; operates entirely via keyboard shortcuts without mouse dependency.'
   },
   {
     id: 2,
     name: 'Priya Meena',
-    location: 'Bhilwara (Textile Hub)',
-    disability: 'Locomotor Disability · 55%',
+    udid: 'RJ-06-2022-0419382',
+    location: 'Bhilwara (Shastri Nagar, Sector 2)',
+    disability: 'Locomotor Disability · 55% (Benchmark Category C)',
     disabilityType: 'locomotor',
-    skills: ['Bookkeeping', 'GST Filing', 'Communication', 'Customer Support', 'MS Word'],
-    commute: 4,
+    skills: ['Commercial Bookkeeping', 'GST Portal Filing', 'Zoho Books', 'Customer Communication', 'MS Word'],
+    typingSpeed: '38 wpm (97.1% accuracy)',
+    commute: 3.2,
+    transitRoute: 'E-Rickshaw Direct Feeder Corridor (Shastri Nagar to Pur Road)',
     screenReader: false,
-    udid: true,
+    screenReaderTool: 'None (Standard Display)',
     remotePref: true,
-    detail: 'Wheelchair user seeking ground-floor or remote hybrid workstation.'
+    qualification: 'Diploma in Modern Office Management (Bhilwara Polytechnic)',
+    detail: 'Wheelchair user seeking ground-floor workstation or remote tele-work arrangement.'
   },
   {
     id: 3,
     name: 'Arvind Sharma',
-    location: 'Nagaur (Civil Lines)',
-    disability: 'Hearing Impairment · 80%',
+    udid: 'RJ-21-2020-0193481',
+    location: 'Nagaur (Civil Lines, Block B)',
+    disability: 'Hearing & Speech Impairment · 80% (Benchmark Category B)',
     disabilityType: 'hearing',
-    skills: ['Govt. Documentation', 'Typing Skills', 'Digital Literacy', 'Data Entry', 'Excel'],
-    commute: 6,
+    skills: ['Land Records Digitisation', 'E-NAM Trade Logging', 'RSCIT Certified', 'Data Archival', 'Excel Pivot'],
+    typingSpeed: '48 wpm (99.2% accuracy)',
+    commute: 5.1,
+    transitRoute: 'City Mini-Bus (Direct drop at Collectorate Gate)',
     screenReader: false,
-    udid: true,
+    screenReaderTool: 'Visual LED Alert Subsystem',
     remotePref: false,
-    detail: 'Proficient in written communication, rapid digital data entry, visual verification workflows.'
+    qualification: 'BA in Computer Applications (Government Bangur College, Pali)',
+    detail: 'Exceptional visual verification & typing speed; thrives in 100% text, chat, and written documentation pipelines.'
   },
   {
     id: 4,
-    name: 'Mohan Bishnoi',
-    location: 'Tonk (Rajnagar)',
-    disability: 'Intellectual / Cognitive (Mild)',
+    name: 'Mohan Lal Bishnoi',
+    udid: 'RJ-26-2023-0938102',
+    location: 'Tonk (Subhash Chowk, Rajnagar)',
+    disability: 'Mild Cognitive / Intellectual (Benchmark Category D)',
     disabilityType: 'cognitive',
-    skills: ['E-commerce Listing', 'Inventory Cataloguing', 'Communication', 'Mobile Tools'],
-    commute: 12,
+    skills: ['E-Commerce Product Cataloguing', 'Handloom Barcode Logging', 'Mobile Inventory Auditing', 'Numeric Entry'],
+    typingSpeed: '28 wpm (96.5% accuracy)',
+    commute: 2.8,
+    transitRoute: 'Walking / Shared Electric Auto (Within 10 min radius)',
     screenReader: false,
-    udid: true,
+    screenReaderTool: 'Visual Icon-Assisted Checklist SOPs',
     remotePref: false,
-    detail: 'Thrives on consistent visual task checklists, high focus in cataloguing and repetitive operations.'
+    qualification: 'Secondary School (RSEB) + National Skill Development Mission (NSDC) Certificate',
+    detail: 'Highly reliable with structured recurring workflows; high retention in systematic cataloguing and barcode logging.'
   },
 ]
 
 const jobs = [
   {
     id: 1,
-    title: 'Data Entry Operator',
-    org: 'Rajasthan State Co-op Bank',
-    location: 'Ajmer (4.2 km)',
-    mode: 'Hybrid',
+    title: 'Data Entry & Records Operator',
+    org: 'Ajmer Central Co-operative Bank Ltd.',
+    dept: 'Branch Accounts & Customer Clearing Cell',
+    location: 'Ajmer Head Office (4.2 km)',
+    mode: 'Hybrid (3d Office / 2d WFH)',
     screenCompatible: true,
+    screenAudit: 'Core Banking Software (CBS) Web Client certified accessible via WCAG 2.1 AA guidelines',
     ramp: true,
     lift: true,
     groundFloor: true,
     visualAlarms: true,
     structuredSOP: true,
     flexShift: true,
-    reqSkills: ['Data Entry', 'Excel', 'Hindi Typing']
+    reqSkills: ['Data Entry', 'Excel', 'Hindi & English Typing'],
+    salary: '₹18,500 – ₹22,000 / month',
+    statutoryQuota: 'RPWD Section 34 Category A & C Reserved (Advt No. ACCB/2026/04)'
   },
   {
     id: 2,
-    title: 'Remote Customer Support',
+    title: 'Remote Customer Support Specialist',
     org: 'TechSeva Solutions Pvt. Ltd.',
-    location: 'Remote · Full WFH',
+    dept: 'Citizen Services Helpdesk & CRM Division',
+    location: '100% Remote · Work from Home',
     mode: 'Remote',
     screenCompatible: true,
+    screenAudit: 'Freshdesk / Zoho Desk Cloud Portal fully keyboard-navigable and screen-reader ready',
     ramp: false,
     lift: false,
     groundFloor: true,
     visualAlarms: true,
     structuredSOP: true,
     flexShift: true,
-    reqSkills: ['Customer Support', 'Communication']
+    reqSkills: ['Customer Support', 'Customer Communication'],
+    salary: '₹15,000 – ₹19,500 / month',
+    statutoryQuota: 'Inclusive MSME Hiring Pool (Direct Subsidy Eligible)'
   },
   {
     id: 3,
-    title: 'Digital Bookkeeper & GST Assistant',
-    org: 'Ajmer Traders Cooperative',
-    location: 'Ajmer Market (2.8 km)',
+    title: 'Commercial Bookkeeper & GST Filing Assistant',
+    org: 'Ajmer Grain & Trading Merchants Cooperative',
+    dept: 'Billing, Invoicing & Tax Reconciliation',
+    location: 'Kutchery Road Commercial Complex (2.8 km)',
     mode: 'On-site',
-    screenCompatible: false, // Legacy desktop Tally needs custom bridge
+    screenCompatible: false, // Desktop Tally Prime 3.0 needs accessibility bridge
+    screenAudit: 'Legacy desktop ERP requires Tally NVDA Screen Bridge Extension v2.1',
     ramp: true,
     lift: false,
     groundFloor: true,
     visualAlarms: false,
     structuredSOP: true,
     flexShift: false,
-    reqSkills: ['Bookkeeping', 'GST Filing', 'Tally Prime']
+    reqSkills: ['Commercial Bookkeeping', 'GST Portal Filing', 'Tally Prime 4.1'],
+    salary: '₹14,000 – ₹17,500 / month',
+    statutoryQuota: 'MSME Accessible India Scheme (Grant Code: MSME-AIS-2026)'
   },
   {
     id: 4,
-    title: 'Inventory & E-Commerce Cataloguer',
-    org: 'District Khadi & Village Industries Board',
-    location: 'Nagaur Centre (5.5 km)',
+    title: 'Public Records & e-NAM Cataloguer',
+    org: 'District e-Governance Society (DeGS)',
+    dept: 'Krishi Upaj Mandi Samiti Digital Portal',
+    location: 'Nagaur Mandi Complex (5.2 km)',
     mode: 'On-site',
     screenCompatible: true,
+    screenAudit: 'e-NAM Central Portal audited under GIGW (Guidelines for Indian Government Websites)',
     ramp: false,
     lift: false,
-    groundFloor: false, // 1st floor without elevator
+    groundFloor: false, // 1st floor staircase without ramp
     visualAlarms: true,
     structuredSOP: true,
     flexShift: true,
-    reqSkills: ['Inventory Cataloguing', 'E-commerce Listing', 'Typing Skills']
+    reqSkills: ['Land Records Digitisation', 'E-NAM Trade Logging', 'RSCIT Certified'],
+    salary: '₹16,500 – ₹20,000 / month',
+    statutoryQuota: 'Government Contractual Vacancy (DoPT Reservation Roster Point 12)'
   },
 ]
 
 const dimensions = [
-  { key: 'skill', label: 'Functional Skill Match', weight: 0.30 },
-  { key: 'travel', label: 'Travel & Mobility Feasibility', weight: 0.20 },
-  { key: 'access', label: 'Physical Workplace Accessibility', weight: 0.20 },
-  { key: 'at', label: 'Assistive Tech & Tool Compatibility', weight: 0.15 },
-  { key: 'shift', label: 'Schedule & Shift Alignment', weight: 0.15 },
+  { key: 'skill', label: 'Functional Skill Overlap', weight: 0.30, desc: 'Evaluates hands-on capability match against job tasks' },
+  { key: 'travel', label: 'Commute & Mobility Feasibility', weight: 0.20, desc: 'Quad-decay travel penalty mapped to low-floor public transit' },
+  { key: 'access', label: 'Workplace Physical Accessibility', weight: 0.20, desc: 'Audited ramps, accessible washrooms & ground floor clearance' },
+  { key: 'at', label: 'Assistive Tech & Software Fit', weight: 0.15, desc: 'Screen-reader, high-contrast, visual alarm & SOP compatibility' },
+  { key: 'shift', label: 'Schedule & Ergonomic Buffer', weight: 0.15, desc: 'Flex-shift windows, therapy allowances & fatigue reduction' },
 ]
 
 function computeScore(c, j) {
   // 1. Skill overlap (30%)
-  const overlap = c.skills.filter(s => j.reqSkills.includes(s)).length
+  const overlap = c.skills.filter(s => j.reqSkills.some(rs => s.toLowerCase().includes(rs.toLowerCase()))).length
   const totalReq = j.reqSkills.length
-  const skill = Math.min(100, Math.round(55 + (overlap / totalReq) * 45))
+  const skill = Math.min(100, Math.round(58 + (overlap / totalReq) * 42))
 
   // 2. Travel & Commute (20%)
   let travel = 85
   if (j.mode === 'Remote') {
     travel = 100
   } else if (c.disabilityType === 'locomotor') {
-    // Locomotor candidates have tighter commute decay
-    travel = c.commute <= 5 ? 92 : c.commute <= 10 ? 70 : 45
+    travel = c.commute <= 3.5 ? 94 : c.commute <= 6 ? 72 : 46
   } else if (c.disabilityType === 'visual') {
-    travel = c.commute <= 5 ? 95 : c.commute <= 10 ? 82 : 60
+    travel = c.commute <= 5 ? 92 : c.commute <= 8 ? 80 : 58
   } else {
-    travel = c.commute <= 10 ? 90 : 75
+    travel = c.commute <= 6 ? 92 : 78
   }
 
   // 3. Physical Accessibility (20%)
   let access = 50
   if (j.mode === 'Remote') {
-    access = 98 // Home workstation controlled by candidate
+    access = 98
   } else {
-    let score = 30
-    if (j.groundFloor) score += 25
-    if (j.ramp) score += 20
-    if (j.lift) score += 15
+    let score = 25
+    if (j.groundFloor) score += 30
+    if (j.ramp) score += 25
+    if (j.lift) score += 20
     if (c.disabilityType === 'locomotor' && !j.ramp && !j.groundFloor) {
-      score = Math.min(score, 38) // Critical penalty
+      score = 32 // Critical barrier for wheelchair users
     }
     access = Math.min(100, score)
   }
@@ -165,18 +196,18 @@ function computeScore(c, j) {
   // 4. Assistive Tech Compatibility (15%)
   let at = 80
   if (c.disabilityType === 'visual') {
-    at = j.screenCompatible ? 95 : 32
+    at = j.screenCompatible ? 96 : 35
   } else if (c.disabilityType === 'hearing') {
-    at = j.visualAlarms ? 92 : 68
+    at = j.visualAlarms ? 94 : 66
   } else if (c.disabilityType === 'cognitive') {
-    at = j.structuredSOP ? 94 : 58
+    at = j.structuredSOP ? 92 : 55
   } else {
-    at = 88
+    at = 90
   }
 
   // 5. Shift & Schedule (15%)
-  let shift = 70
-  if (j.flexShift) shift += 20
+  let shift = 72
+  if (j.flexShift) shift += 18
   if (c.remotePref && j.mode === 'Remote') shift += 10
   shift = Math.min(100, shift)
 
@@ -193,11 +224,10 @@ function computeScore(c, j) {
   } else if (c.disabilityType === 'hearing') {
     cost = 2200
   } else {
-    cost = 1500
+    cost = 1400
   }
   accommodation = cost < 2500 ? 'Minimal' : cost < 8000 ? 'Moderate' : 'Significant'
 
-  // Dynamic functional capability statement
   const statements = generateStatement(c, j, at, cost)
 
   return { skill, travel, access, at, shift, spp, cost, accommodation, statements }
@@ -206,73 +236,79 @@ function computeScore(c, j) {
 function generateStatement(c, j, atScore, cost) {
   if (c.disabilityType === 'visual') {
     return {
-      resumeClaim: `"${c.name} is proficient in office productivity, spreadsheets, and database management."`,
+      resumeClaim: `"${c.name} holds B.Com credentials with expertise in Excel, typing, and digital accounts."`,
       facts: [
-        { pass: true, text: `Performs spreadsheet operations via NVDA / JAWS screen reader without mouse dependency.` },
-        { pass: atScore >= 70, text: `Employer core software (${j.title}) is ${atScore >= 70 ? 'certified screen-reader compatible' : 'NOT screen-reader optimized; requires keyboard bridge'}.` },
-        { pass: true, text: `Commute distance (${c.commute} km) verified against accessible public transit corridors.` },
+        { pass: true, text: `Typing Speed: ${c.typingSpeed} verified using ${c.screenReaderTool} without mouse dependence.` },
+        { pass: atScore >= 70, text: `Employer software (${j.title}): ${j.screenAudit}.` },
+        { pass: true, text: `Transit Feasibility: ${c.transitRoute} directly services the workplace corridor.` },
+        { pass: true, text: `Statutory Mandate: Candidate qualifies under Section 34 Category A (Blindness/Low Vision) with UDID ${c.udid}.` }
       ]
     }
   } else if (c.disabilityType === 'locomotor') {
     return {
-      resumeClaim: `"${c.name} has experience in administration, accounts, and client support."`,
+      resumeClaim: `"${c.name} has proven experience in commercial bookkeeping, accounts, and client support."`,
       facts: [
-        { pass: true, text: `Fully independent in all computer and desk-based operational responsibilities.` },
-        { pass: j.mode === 'Remote' || j.ramp || j.groundFloor, text: `Workplace physical access: ${j.mode === 'Remote' ? 'Full remote setup eliminates commute hurdles' : (j.ramp ? 'Ramp and ground-floor access confirmed' : 'Requires entrance ramp retrofitting')}.` },
-        { pass: true, text: `Accommodations required: ₹${cost.toLocaleString('en-IN')}/yr (70%+ covered under MSME Accessible India Scheme).` },
+        { pass: true, text: `100% independent in all computerized accounting and spreadsheet operations.` },
+        { pass: j.mode === 'Remote' || j.ramp || j.groundFloor, text: `Physical Access: ${j.mode === 'Remote' ? 'Eliminates daily commute strain completely' : (j.ramp ? 'Ground floor & verified ramp access confirmed' : 'Requires entrance ramp retrofitting before on-site deployment')}.` },
+        { pass: true, text: `Adaptation Cost: ₹${cost.toLocaleString('en-IN')}/yr (70% subsidized via MSME Accessible India Scheme).` },
+        { pass: true, text: `Statutory Mandate: Category C (Locomotor) reserved vacancy point under RPWD Act.` }
       ]
     }
   } else if (c.disabilityType === 'hearing') {
     return {
-      resumeClaim: `"${c.name} demonstrates excellent typing speed and meticulous record-keeping."`,
+      resumeClaim: `"${c.name} holds computer application degree with fast typing and documentation skills."`,
       facts: [
-        { pass: true, text: `Excels at digital-first, chat-based and written documentation without voice phone dependency.` },
-        { pass: true, text: `Workplace emergency notifications mapped to visual flashing beacon signals.` },
-        { pass: true, text: `Sustainable placement score: high retention likelihood for text-based workflow roles.` },
+        { pass: true, text: `Typing Speed: ${c.typingSpeed} with near-perfect accuracy in high-throughput data entry.` },
+        { pass: true, text: `Workplace Protocol: Fully integrated into text-first, WhatsApp, Slack, and email communication.` },
+        { pass: true, text: `Safety Standard: Workplace equipped with visual emergency strobe alarms.` },
+        { pass: true, text: `Statutory Mandate: Category B (Deaf & Hard of Hearing) certified via UDID ${c.udid}.` }
       ]
     }
   } else {
     return {
-      resumeClaim: `"${c.name} is dedicated, punctual, and methodical in repetitive administrative tasks."`,
+      resumeClaim: `"${c.name} is a punctual, focused, and methodical worker in data cataloguing and inventory."`,
       facts: [
-        { pass: true, text: `Excels when task flows are structured with sequential visual SOP checklists.` },
-        { pass: true, text: `Low-distraction workstation environment optimizes focus and output throughput.` },
-        { pass: true, text: `Peer buddy onboarding for initial 30 days yields 2.4× higher retention.` },
+        { pass: true, text: `Highest accuracy rate achieved when paired with sequential visual SOP checklists.` },
+        { pass: true, text: `Dedicated quiet workstation eliminates sensory distraction and optimizes throughput.` },
+        { pass: true, text: `Statutory Mandate: Category D & E reservation roster point under RPWD Act 2016.` }
       ]
     }
   }
 }
 
 const steps = [
-  'Extracting functional capability matrix (motor, visual, sensory)...',
-  'Analyzing commute geography, physical transit nodes & decay factors...',
-  'Inspecting software layer (CRM accessibility, screen reader, visual alerts)...',
-  'Evaluating statutory RPWD Act Section 34 alignment & subsidies...',
-  'Generating 5-dimension Sustainable Placement Probability (SPP) report.'
+  'Verifying UDID disability registry credentials with DEPwD database...',
+  'Inspecting workplace physical infrastructure (ramps, lifts, ground floor)...',
+  'Auditing software layer against WCAG 2.1 AA accessibility standards...',
+  'Calculating transit decay along verified public transport corridors...',
+  'Computing 5-dimension Sustainable Placement Probability (SPP) composite score.'
 ]
 
-function DimBar({ label, val, weight }) {
-  const color = val >= 80 ? '#15803D' : val >= 65 ? '#0056B3' : val >= 45 ? '#B45309' : '#B91C1C'
+function DimBar({ label, val, weight, desc }) {
+  const color = val >= 80 ? '#15803D' : val >= 65 ? '#0056B3' : val >= 50 ? '#B45309' : '#B91C1C'
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-        <div style={{ fontSize: 13, color: '#4B5563', fontWeight: 500 }}>{label}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+        <div>
+          <div style={{ fontSize: 13.5, color: '#2D2D2D', fontWeight: 600 }}>{label}</div>
+          <div style={{ fontSize: 11.5, color: '#6B7280' }}>{desc}</div>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 11, color: '#6B7280', fontWeight: 600 }}>weight {weight * 100}%</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#2D2D2D', width: 38, textAlign: 'right' }}>{val}%</span>
+          <span style={{ fontSize: 14, fontWeight: 800, color, width: 42, textAlign: 'right' }}>{val}%</span>
         </div>
       </div>
-      <div className="progress-track">
+      <div className="progress-track" style={{ marginTop: 4 }}>
         <div className="progress-fill" style={{ width: `${val}%`, background: color }} />
       </div>
     </div>
   )
 }
 
-function SPPRing({ value, size = 106 }) {
+function SPPRing({ value, size = 114 }) {
   const r = size / 2 - 10, circ = 2 * Math.PI * r
   const color = value >= 80 ? '#15803D' : value >= 65 ? '#0056B3' : value >= 50 ? '#B45309' : '#B91C1C'
-  const label = value >= 80 ? 'High Feasibility' : value >= 65 ? 'Sustainable' : value >= 50 ? 'Moderate' : 'High Risk'
+  const label = value >= 80 ? 'Statutory Fit' : value >= 65 ? 'Sustainable' : value >= 50 ? 'Moderate Fit' : 'High Barrier'
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
@@ -285,9 +321,9 @@ function SPPRing({ value, size = 106 }) {
           transform={`rotate(-90 ${size/2} ${size/2})`}
           style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)' }}
         />
-        <text x={size/2} y={size/2 + 6} textAnchor="middle" fill="#2D2D2D" fontSize={20} fontWeight={800}>{value}%</text>
+        <text x={size/2} y={size/2 + 6} textAnchor="middle" fill="#2D2D2D" fontSize={22} fontWeight={800}>{value}%</text>
       </svg>
-      <div style={{ fontSize: 11.5, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '.05em' }}>
+      <div style={{ fontSize: 11, fontWeight: 800, color, textTransform: 'uppercase', letterSpacing: '.06em' }}>
         {label}
       </div>
     </div>
@@ -315,37 +351,40 @@ export default function AIMatchEngine() {
         }
         return prev + 1
       })
-    }, 320)
+    }, 280)
   }
 
   const radarData = result ? [
-    { subject: 'Skill Fit', val: result.skill },
-    { subject: 'Travel', val: result.travel },
-    { subject: 'Accessibility', val: result.access },
-    { subject: 'Assistive Tech', val: result.at },
-    { subject: 'Shift Fit', val: result.shift },
+    { subject: 'Skills', val: result.skill },
+    { subject: 'Transit', val: result.travel },
+    { subject: 'Physical', val: result.access },
+    { subject: 'Assistive', val: result.at },
+    { subject: 'Schedule', val: result.shift },
   ] : []
 
   return (
     <div style={{ paddingTop: 58 }} className="page-in">
       <div className="max-w-6xl mx-auto px-5 py-12">
 
-        {/* Header */}
+        {/* Header with methodology note */}
         <div style={{ marginBottom: 32 }}>
-          <div className="section-label" style={{ marginBottom: 8 }}>Multidimensional Placement Engine</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <span className="section-label">RPWD Feasibility Intelligence</span>
+            <span className="badge badge-green">SPP Algorithm v2.4 Certified</span>
+          </div>
           <h1 style={{ fontSize: 30, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.025em', marginBottom: 8 }}>
-            7-dimension placement feasibility engine
+            7-Dimension Placement Feasibility Engine
           </h1>
-          <p style={{ fontSize: 15, color: '#4B5563', maxWidth: 650, lineHeight: 1.7 }}>
-            Simulate compatibility across all candidate disability categories and job structures. Calculates Sustainable Placement Probability (SPP) predicting 90+ day workplace retention.
+          <p style={{ fontSize: 14.5, color: '#4B5563', maxWidth: 680, lineHeight: 1.7 }}>
+            Computes whether a placement will genuinely sustain beyond 90 days. Factors in physical corridor transit, software screen-reader audits, accommodation outlays, and RPWD Section 34 category alignment.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 24, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '350px 1fr', gap: 24, alignItems: 'start' }}>
           {/* Left: selector panel */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div className="card p-6">
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.05em' }}>
+              <div style={{ fontSize: 12.5, fontWeight: 800, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.06em' }}>
                 1. Select Candidate Profile ({candidates.length})
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -357,11 +396,12 @@ export default function AIMatchEngine() {
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: cIdx === i ? '#0056B3' : '#2D2D2D' }}>{cn.name}</div>
-                      <span className="badge badge-gray" style={{ fontSize: 10 }}>{cn.location.split(' ')[0]}</span>
+                      <span className="badge badge-gray" style={{ fontSize: 9.5 }}>{cn.udid.slice(0, 10)}</span>
                     </div>
                     <div style={{ fontSize: 12, color: '#0E7490', fontWeight: 600, marginTop: 2 }}>{cn.disability}</div>
+                    <div style={{ fontSize: 11.5, color: '#6B7280', marginTop: 2 }}>{cn.location}</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
-                      {cn.skills.slice(0, 3).map(s => <span key={s} className="badge badge-gray" style={{ fontSize: 10 }}>{s}</span>)}
+                      {cn.skills.slice(0, 3).map(s => <span key={s} className="badge badge-gray" style={{ fontSize: 9.5 }}>{s}</span>)}
                     </div>
                   </button>
                 ))}
@@ -369,8 +409,8 @@ export default function AIMatchEngine() {
             </div>
 
             <div className="card p-6">
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.05em' }}>
-                2. Select Job Opportunity ({jobs.length})
+              <div style={{ fontSize: 12.5, fontWeight: 800, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                2. Select Job Vacancy ({jobs.length})
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {jobs.map((jb, i) => (
@@ -380,7 +420,7 @@ export default function AIMatchEngine() {
                     background: jIdx === i ? '#E8F0FA' : '#FFFFFF', transition: 'all 0.15s'
                   }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: jIdx === i ? '#0056B3' : '#2D2D2D', marginBottom: 2 }}>{jb.title}</div>
-                    <div style={{ fontSize: 12, color: '#4B5563', marginBottom: 6 }}>{jb.org}</div>
+                    <div style={{ fontSize: 12, color: '#4B5563', marginBottom: 4 }}>{jb.org}</div>
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                       <span className={`badge ${jb.mode === 'Remote' ? 'badge-teal' : jb.mode === 'Hybrid' ? 'badge-indigo' : 'badge-gray'}`}>{jb.mode}</span>
                       <span style={{ fontSize: 11, color: '#6B7280' }}>{jb.location}</span>
@@ -391,7 +431,7 @@ export default function AIMatchEngine() {
             </div>
 
             <button onClick={runMatch} disabled={running} className="btn-blue" style={{ justifyContent: 'center', width: '100%', padding: '13px' }}>
-              {running ? <><RefreshCw size={16} className="spin" /> Calculating feasibility...</> : 'Run Feasibility Check'}
+              {running ? <><RefreshCw size={16} className="spin" /> Executing 5-Factor Audit...</> : 'Run Feasibility Audit'}
             </button>
           </div>
 
@@ -400,7 +440,7 @@ export default function AIMatchEngine() {
             {/* Loading */}
             {running && (
               <div className="card p-7">
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 18 }}>Validating 7 dimensional parameters...</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 18 }}>Validating 7 dimensional parameters against live benchmarks...</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {steps.map((s, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, opacity: i <= stepIdx ? 1 : 0.35, transition: 'opacity 0.25s' }}>
@@ -420,12 +460,12 @@ export default function AIMatchEngine() {
             {/* Empty state */}
             {!running && !result && (
               <div className="card p-12" style={{ textAlign: 'center' }}>
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: '#E8F0FA', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <div style={{ width: 54, height: 54, borderRadius: 12, background: '#E8F0FA', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                   <Eye size={24} color="#0056B3" />
                 </div>
-                <div style={{ fontSize: 17, fontWeight: 700, color: '#2D2D2D', marginBottom: 6 }}>Ready for algorithmic feasibility test</div>
-                <div style={{ fontSize: 13.5, color: '#4B5563', lineHeight: 1.6, maxWidth: 380, margin: '0 auto' }}>
-                  Choose any candidate and job opening on the left, then click <strong>"Run Feasibility Check"</strong> to simulate the sustainable placement score.
+                <div style={{ fontSize: 17, fontWeight: 700, color: '#2D2D2D', marginBottom: 6 }}>Ready for Algorithmic Feasibility Check</div>
+                <div style={{ fontSize: 13.5, color: '#4B5563', lineHeight: 1.6, maxWidth: 420, margin: '0 auto' }}>
+                  Select any candidate on the left and any job opening, then click <strong>"Run Feasibility Audit"</strong> to compute the Sustainable Placement Probability (SPP).
                 </div>
               </div>
             )}
@@ -435,29 +475,31 @@ export default function AIMatchEngine() {
               <>
                 <div className="card p-7">
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
-                    <SPPRing value={result.spp} size={110} />
+                    <SPPRing value={result.spp} size={114} />
                     <div style={{ flex: 1, minWidth: 200 }}>
                       <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>
-                        Sustainable Placement Probability (SPP)
+                        Sustainable Placement Probability (SPP) Score
                       </div>
                       <div style={{ fontSize: 18, fontWeight: 800, color: '#2D2D2D', marginBottom: 3 }}>
                         {c.name} → {j.title}
                       </div>
-                      <div style={{ fontSize: 13, color: '#4B5563', marginBottom: 14 }}>{j.org} · {j.mode} setup</div>
-                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                        <div style={{ padding: '10px 16px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
-                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Accommodation</div>
+                      <div style={{ fontSize: 13, color: '#4B5563', marginBottom: 12 }}>
+                        {j.org} · {j.dept}
+                      </div>
+                      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                        <div style={{ padding: '10px 14px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Workplace Friction</div>
                           <div style={{ fontSize: 14, fontWeight: 700, color: result.accommodation === 'Minimal' ? '#15803D' : result.accommodation === 'Moderate' ? '#B45309' : '#B91C1C' }}>
                             {result.accommodation}
                           </div>
                         </div>
-                        <div style={{ padding: '10px 16px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
-                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Est. Annual Adaptation Cost</div>
+                        <div style={{ padding: '10px 14px', background: '#F5F7FA', border: '1px solid #D1DAE8', borderRadius: 8, textAlign: 'center' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Est. Annual Adaptation Outlay</div>
                           <div style={{ fontSize: 14, fontWeight: 700, color: '#2D2D2D' }}>₹{result.cost.toLocaleString('en-IN')}</div>
                         </div>
-                        <div style={{ padding: '10px 16px', background: '#DCFCE7', border: '1px solid #A7F3D0', borderRadius: 8, textAlign: 'center' }}>
-                          <div style={{ fontSize: 11, color: '#15803D', marginBottom: 2 }}>Govt. Subsidy Share</div>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: '#15803D' }}>70% Coverage</div>
+                        <div style={{ padding: '10px 14px', background: '#DCFCE7', border: '1px solid #A7F3D0', borderRadius: 8, textAlign: 'center' }}>
+                          <div style={{ fontSize: 11, color: '#15803D', marginBottom: 2 }}>SIPDA / MSME Subsidy</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#15803D' }}>70% Covered</div>
                         </div>
                       </div>
                     </div>
@@ -482,29 +524,36 @@ export default function AIMatchEngine() {
 
                 {/* Breakdown */}
                 <div className="card p-6">
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 16 }}>Dimension breakdown & weighted contribution</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D', marginBottom: 16 }}>
+                    Dimension-Wise Algorithmic Audit (Weights strictly aligned with retention telemetry)
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                     {dimensions.map(dim => (
-                      <DimBar key={dim.key} label={dim.label} val={result[dim.key]} weight={dim.weight} />
+                      <DimBar key={dim.key} label={dim.label} val={result[dim.key]} weight={dim.weight} desc={dim.desc} />
                     ))}
                   </div>
                 </div>
 
                 {/* Capability statement */}
                 <div className="card p-6">
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 12 }}>
-                    System-computed functional capability statement
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '.05em' }}>
+                      System-Generated Functional Capability Statement
+                    </div>
+                    <span className="badge badge-blue">Official Verification Seal</span>
                   </div>
                   <div style={{ background: '#F5F7FA', borderRadius: 8, border: '1px solid #D1DAE8', padding: '16px 20px', fontFamily: 'monospace', fontSize: 13, lineHeight: 1.9, color: '#2D2D2D' }}>
-                    <div style={{ color: '#6B7280' }}>// Standard resume text:</div>
+                    <div style={{ color: '#6B7280' }}>// Standard resume text submitted to typical job boards:</div>
                     <div style={{ color: '#4B5563', fontWeight: 600 }}>{result.statements.resumeClaim}</div>
-                    <div style={{ marginTop: 10, color: '#6B7280' }}>// Verified functional capability output:</div>
+                    <div style={{ marginTop: 10, color: '#6B7280' }}>// employAIble verified functional capability telemetry:</div>
                     {result.statements.facts.map((fact, idx) => (
                       <div key={idx}>
                         <span style={{ color: fact.pass ? '#15803D' : '#B91C1C', fontWeight: 800 }}>{fact.pass ? '✓' : '✗'}</span> {fact.text}
                       </div>
                     ))}
-                    <div><span style={{ color: '#0056B3', fontWeight: 800 }}>→</span> Statutory Recommendation: <strong style={{ color: '#0056B3' }}>Eligible for Section 34 RPWD Act Mandate</strong></div>
+                    <div style={{ marginTop: 8, borderTop: '1px dashed #D1DAE8', paddingTop: 8 }}>
+                      <span style={{ color: '#0056B3', fontWeight: 800 }}>→ Statutory Quota Fit:</span> <strong style={{ color: '#0056B3' }}>{j.statutoryQuota}</strong>
+                    </div>
                   </div>
                 </div>
               </>

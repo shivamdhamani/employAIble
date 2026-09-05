@@ -32,9 +32,9 @@ function getDynamicMatches(disability, commute, needs, skillsState) {
   if (disability === 'visual') {
     return [
       {
-        title: 'Data Entry Operator',
-        org: 'Rajasthan State Cooperative Bank',
-        location: `Ajmer · 4.2 km`,
+        title: 'Data Entry & CBS Assistant',
+        org: 'Ajmer Central Co-operative Bank Ltd.',
+        location: `Ajmer Head Office · 4.2 km (Accessible Bus Route 4A)`,
         mode: 'Hybrid',
         type: 'Government',
         spp: Math.min(96, Math.round(skillMultiplier * 0.35 + 57)),
@@ -47,13 +47,13 @@ function getDynamicMatches(disability, commute, needs, skillsState) {
         ],
         accommodation: 'Minimal',
         cost: '₹2,400/yr',
-        tags: ['Screen reader certified', 'Keyboard nav', 'Govt 4% Quota'],
-        salary: '₹18,000 – ₹22,000'
+        tags: ['Screen reader certified', 'Advt No. ACCB/2026/04', 'RPWD 4% Quota Point 1'],
+        salary: '₹18,500 – ₹22,000 / month'
       },
       {
-        title: 'Remote Customer Support Specialist',
+        title: 'Remote Citizen Helpdesk Associate',
         org: 'TechSeva Solutions Pvt. Ltd.',
-        location: 'Remote · Work from home',
+        location: '100% Remote · Work from home',
         mode: 'Remote',
         type: 'Private',
         spp: Math.min(92, Math.round(skillMultiplier * 0.32 + 54)),
@@ -66,8 +66,8 @@ function getDynamicMatches(disability, commute, needs, skillsState) {
         ],
         accommodation: 'Minimal',
         cost: '₹1,500/yr',
-        tags: ['100% Remote', 'Telephony Shortcuts', 'Hindi/English'],
-        salary: '₹14,000 – ₹18,000'
+        tags: ['100% WFH', 'Telephony Hotkeys', 'Bilingual Hindi/English'],
+        salary: '₹15,000 – ₹19,000 / month'
       },
       {
         title: 'Digital Records Cataloguer',
@@ -433,7 +433,7 @@ export default function CandidatePortal() {
         {step === 0 && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             <div className="card p-7" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D' }}>Basic information</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#2D2D2D' }}>Basic Candidate Information</div>
               <div>
                 <label className="label">Full name</label>
                 <input className="input" defaultValue="Ramesh Kumar Sharma" />
@@ -443,7 +443,19 @@ export default function CandidatePortal() {
                 <div><label className="label">State</label><input className="input" defaultValue="Rajasthan" /></div>
               </div>
               <div>
-                <label className="label">Max commute threshold — <span style={{ color: '#0056B3', fontWeight: 700 }}>{commute} km</span></label>
+                <label className="label">Unique Disability ID (UDID Number)</label>
+                <div style={{ position: 'relative' }}>
+                  <input className="input" defaultValue="RJ-01-2021-0849201" style={{ fontFamily: 'monospace', fontWeight: 600, color: '#0056B3' }} />
+                  <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 11, fontWeight: 700, color: '#15803D', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <CheckCircle size={14} color="#15803D" /> DEPwD Verified
+                  </span>
+                </div>
+                <span style={{ fontSize: 11.5, color: '#6B7280', marginTop: 4, display: 'block' }}>
+                  Swavlamban card linked · Category A Benchmark Disability (70% Visual)
+                </span>
+              </div>
+              <div>
+                <label className="label">Maximum commute threshold — <span style={{ color: '#0056B3', fontWeight: 700 }}>{commute} km</span></label>
                 <input type="range" min={1} max={50} value={commute} onChange={e => setCommute(+e.target.value)} style={{ width: '100%', accentColor: '#0056B3', marginTop: 8 }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6B7280', marginTop: 4 }}>
                   <span>1 km</span><span>25 km</span><span>50 km</span>
