@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import {
   Users, Building2, BarChart3, MapPin, Shield, KeyRound,
   CheckCircle, ArrowRight, Sparkles, Smartphone, Mail,
@@ -62,6 +63,7 @@ const roles = [
 ]
 
 export default function LoginPage() {
+  const { user, login, logout } = useAuth()
   const [selectedRole, setSelectedRole] = useState('candidate')
   const [authMode, setAuthMode] = useState('otp') // 'otp' or 'password'
   const [identifier, setIdentifier] = useState('RJ-01-2021-0849201')
@@ -72,6 +74,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const destination = location.state?.from || null
 
   const activeRole = roles.find(r => r.id === selectedRole) || roles[0]
 
@@ -98,10 +103,20 @@ export default function LoginPage() {
     setTimeout(() => {
       setLoading(false)
       setSuccess(true)
+      const userData = {
+        role: activeRole.id,
+        name: activeRole.demoUser,
+        identifier: identifier,
+        roleTitle: activeRole.title,
+        color: activeRole.color,
+        bg: activeRole.bg,
+        redirect: activeRole.redirect,
+      }
+      login(userData)
       setTimeout(() => {
-        navigate(activeRole.redirect)
-      }, 900)
-    }, 800)
+        navigate(destination || activeRole.redirect)
+      }, 700)
+    }, 600)
   }
 
   const handleQuickDemoFill = (roleObj) => {
@@ -110,10 +125,20 @@ export default function LoginPage() {
     setTimeout(() => {
       setLoading(false)
       setSuccess(true)
+      const userData = {
+        role: roleObj.id,
+        name: roleObj.demoUser,
+        identifier: roleObj.defaultIdentifier,
+        roleTitle: roleObj.title,
+        color: roleObj.color,
+        bg: roleObj.bg,
+        redirect: roleObj.redirect,
+      }
+      login(userData)
       setTimeout(() => {
-        navigate(roleObj.redirect)
-      }, 700)
-    }, 500)
+        navigate(destination || roleObj.redirect)
+      }, 600)
+    }, 400)
   }
 
   return (
@@ -135,6 +160,43 @@ export default function LoginPage() {
             Select your platform role to access candidate capability profiles, employer tools, district dashboards, or rural CSC services.
           </p>
         </div>
+
+        {/* Destination Alert */}
+        {destination && (
+          <div style={{ maxWidth: 640, margin: '0 auto 20px', padding: '12px 16px', background: '#FEF3C7', border: '1px solid #FCD34D', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 10, color: '#92400E', fontSize: 13.5 }}>
+            <AlertCircle size={18} color="#B45309" />
+            <span><strong>Authentication Required:</strong> Please sign in to access this platform module. Once signed in, you will be directed straight into it.</span>
+          </div>
+        )}
+
+        {/* Existing Session Notice */}
+        {user && (
+          <div style={{ maxWidth: 640, margin: '0 auto 24px', background: '#E8F0FA', border: '1px solid #BFDBFE', borderRadius: 10, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#15803D' }} />
+              <div>
+                <div style={{ fontSize: 13, color: '#4B5563' }}>Currently signed in:</div>
+                <div style={{ fontSize: 14.5, fontWeight: 700, color: '#2D2D2D' }}>{user.name} ({user.roleTitle})</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                onClick={() => navigate(user.redirect || '/candidate')}
+                className="btn-blue btn-sm"
+                style={{ fontWeight: 600 }}
+              >
+                Open Dashboard →
+              </button>
+              <button
+                onClick={logout}
+                className="btn-ghost btn-sm"
+                style={{ color: '#B91C1C', borderColor: '#FCA5A5' }}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Role Switcher Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 28 }}>
@@ -375,6 +437,29 @@ export default function LoginPage() {
             <span>✓ 256-bit Encrypted Token</span>
             <span>✓ Section 34 RPWD Ready</span>
           </div>
+        </div>
+
+        {/* Public Overview Gateway Link */}
+        <div style={{ textAlign: 'center', marginTop: 24 }}>
+          <Link
+            to="/home"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 13,
+              color: '#4B5563',
+              textDecoration: 'none',
+              padding: '6px 14px',
+              borderRadius: 20,
+              background: '#FFFFFF',
+              border: '1px solid #D1DAE8',
+              fontWeight: 500,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+            }}
+          >
+            Looking for platform overview first? <span style={{ color: '#0056B3', fontWeight: 700 }}>Explore Public Landing Page →</span>
+          </Link>
         </div>
 
       </div>

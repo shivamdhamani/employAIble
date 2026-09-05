@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
 import CandidatePortal from './pages/CandidatePortal'
@@ -9,22 +10,49 @@ import CSCOnboarding from './pages/CSCOnboarding'
 import CommunityPanel from './pages/CommunityPanel'
 import LoginPage from './pages/LoginPage'
 
+function FrontGateway() {
+  const { isLoggedIn, user } = useAuth()
+  if (!isLoggedIn) {
+    return <LoginPage />
+  }
+  // Once signed in, opens the platform landing or candidate dashboard
+  return <LandingPage />
+}
+
+function ProtectedRoute({ children }) {
+  const { isLoggedIn } = useAuth()
+  const location = useLocation()
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />
+  }
+  return children
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
-        <Navbar />
-        <Routes>
-          <Route path="/"           element={<LandingPage />} />
-          <Route path="/candidate"  element={<CandidatePortal />} />
-          <Route path="/employer"   element={<EmployerPortal />} />
-          <Route path="/government" element={<GovernmentDashboard />} />
-          <Route path="/ai-match"   element={<AIMatchEngine />} />
-          <Route path="/csc"        element={<CSCOnboarding />} />
-          <Route path="/community"  element={<CommunityPanel />} />
-          <Route path="/login"      element={<LoginPage />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
+          <Navbar />
+          <Routes>
+            {/* Front route: Sign in comes in the front first! */}
+            <Route path="/" element={<FrontGateway />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/home" element={<LandingPage />} />
+            
+            {/* Portals open once signed in */}
+            <Route path="/candidate" element={<ProtectedRoute><CandidatePortal /></ProtectedRoute>} />
+            <Route path="/employer" element={<ProtectedRoute><EmployerPortal /></ProtectedRoute>} />
+            <Route path="/government" element={<ProtectedRoute><GovernmentDashboard /></ProtectedRoute>} />
+            <Route path="/ai-match" element={<ProtectedRoute><AIMatchEngine /></ProtectedRoute>} />
+            <Route path="/csc" element={<ProtectedRoute><CSCOnboarding /></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><CommunityPanel /></ProtectedRoute>} />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
