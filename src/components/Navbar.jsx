@@ -3,11 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Platform',       path: '/candidate' },
-  { label: 'For Employers',  path: '/employer'  },
-  { label: 'For Government', path: '/government'},
-  { label: 'Match Scorer',   path: '/ai-match'  },
-  { label: 'CSC Access',     path: '/csc'       },
+  { label: 'Platform',       path: '/candidate'  },
+  { label: 'For Employers',  path: '/employer'   },
+  { label: 'For Government', path: '/government' },
+  { label: 'Match Scorer',   path: '/ai-match'   },
+  { label: 'Community',      path: '/community'  },
+  { label: 'CSC Access',     path: '/csc'        },
 ]
 
 export default function Navbar() {

@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend
 } from 'recharts'
-import { AlertTriangle, CheckCircle, TrendingUp, Users, Target, Zap } from 'lucide-react'
+import { AlertTriangle, CheckCircle, TrendingUp, Users, Target, Zap, Download } from 'lucide-react'
 
 const districts = ['Ajmer', 'Bhilwara', 'Nagaur', 'Tonk', 'Didwana']
 
@@ -45,8 +45,169 @@ const districtData = {
       { cat: 'Deaf / Hard of hearing', filled: 0.7, req: 1 },
       { cat: 'Locomotor disability', filled: 1.93, req: 1 },
       { cat: 'Autism / Intellectual', filled: 0.27, req: 1 },
-    ]
-  }
+    ],
+    action: 'Mobilize 18 local commerce establishments for digital bookkeeping — highest feasibility ratio in Ajmer.',
+  },
+  Bhilwara: {
+    total: 623, registered: 198, placed: 54, quotaFill: 42,
+    opportunities: [
+      { role: 'Textile data entry', candidates: 27, demand: 22 },
+      { role: 'Remote customer support', candidates: 34, demand: 18 },
+      { role: 'Digital documentation', candidates: 19, demand: 14 },
+      { role: 'Inventory cataloguing', candidates: 41, demand: 30 },
+      { role: 'Basic IT support', candidates: 16, demand: 9 },
+    ],
+    skills: [
+      { name: 'Basic digital', count: 62 },
+      { name: 'Customer support', count: 35 },
+      { name: 'Data entry', count: 48 },
+      { name: 'Remote-capable', count: 41 },
+      { name: 'Screen reader', count: 28 },
+      { name: 'Bookkeeping', count: 22 },
+    ],
+    trend: [
+      { month: 'Mar', registered: 121, placed: 28 },
+      { month: 'Apr', registered: 143, placed: 34 },
+      { month: 'May', registered: 162, placed: 38 },
+      { month: 'Jun', registered: 176, placed: 44 },
+      { month: 'Jul', registered: 188, placed: 50 },
+      { month: 'Aug', registered: 198, placed: 54 },
+    ],
+    disability: [
+      { name: 'Locomotor', value: 41, color: '#0056B3' },
+      { name: 'Visual', value: 18, color: '#0E7490' },
+      { name: 'Hearing', value: 21, color: '#6D28D9' },
+      { name: 'Intellectual', value: 12, color: '#B45309' },
+      { name: 'Other', value: 8, color: '#6B7280' },
+    ],
+    quota: [
+      { cat: 'Blindness / Low vision', filled: 0.8, req: 1 },
+      { cat: 'Deaf / Hard of hearing', filled: 0.4, req: 1 },
+      { cat: 'Locomotor disability', filled: 1.6, req: 1 },
+      { cat: 'Autism / Intellectual', filled: 0.2, req: 1 },
+    ],
+    action: 'Partner with textile MSMEs for inventory cataloguing — 41 candidates ready, only 30 demand slots filled.',
+  },
+  Nagaur: {
+    total: 531, registered: 164, placed: 42, quotaFill: 51,
+    opportunities: [
+      { role: 'Agricultural data entry', candidates: 22, demand: 15 },
+      { role: 'Remote tele-calling', candidates: 29, demand: 20 },
+      { role: 'Govt. records digitisation', candidates: 38, demand: 27 },
+      { role: 'E-commerce support', candidates: 18, demand: 11 },
+      { role: 'Basic bookkeeping', candidates: 14, demand: 8 },
+    ],
+    skills: [
+      { name: 'Basic digital', count: 50 },
+      { name: 'Customer support', count: 28 },
+      { name: 'Data entry', count: 38 },
+      { name: 'Remote-capable', count: 32 },
+      { name: 'Screen reader', count: 19 },
+      { name: 'Bookkeeping', count: 17 },
+    ],
+    trend: [
+      { month: 'Mar', registered: 94, placed: 22 },
+      { month: 'Apr', registered: 112, placed: 28 },
+      { month: 'May', registered: 130, placed: 32 },
+      { month: 'Jun', registered: 146, placed: 36 },
+      { month: 'Jul', registered: 156, placed: 39 },
+      { month: 'Aug', registered: 164, placed: 42 },
+    ],
+    disability: [
+      { name: 'Locomotor', value: 35, color: '#0056B3' },
+      { name: 'Visual', value: 24, color: '#0E7490' },
+      { name: 'Hearing', value: 20, color: '#6D28D9' },
+      { name: 'Intellectual', value: 14, color: '#B45309' },
+      { name: 'Other', value: 7, color: '#6B7280' },
+    ],
+    quota: [
+      { cat: 'Blindness / Low vision', filled: 1.2, req: 1 },
+      { cat: 'Deaf / Hard of hearing', filled: 0.6, req: 1 },
+      { cat: 'Locomotor disability', filled: 1.4, req: 1 },
+      { cat: 'Autism / Intellectual', filled: 0.3, req: 1 },
+    ],
+    action: 'Govt. records digitisation project has 38 ready candidates — highest supply-demand match for Nagaur district.',
+  },
+  Tonk: {
+    total: 412, registered: 121, placed: 29, quotaFill: 37,
+    opportunities: [
+      { role: 'Digital literacy training', candidates: 18, demand: 12 },
+      { role: 'Remote data entry', candidates: 24, demand: 17 },
+      { role: 'Panchayat records', candidates: 31, demand: 22 },
+      { role: 'E-commerce cataloguing', candidates: 12, demand: 8 },
+      { role: 'Basic IT support', candidates: 9, demand: 6 },
+    ],
+    skills: [
+      { name: 'Basic digital', count: 38 },
+      { name: 'Customer support', count: 19 },
+      { name: 'Data entry', count: 29 },
+      { name: 'Remote-capable', count: 24 },
+      { name: 'Screen reader', count: 14 },
+      { name: 'Bookkeeping', count: 11 },
+    ],
+    trend: [
+      { month: 'Mar', registered: 68, placed: 14 },
+      { month: 'Apr', registered: 80, placed: 18 },
+      { month: 'May', registered: 94, placed: 21 },
+      { month: 'Jun', registered: 107, placed: 24 },
+      { month: 'Jul', registered: 115, placed: 27 },
+      { month: 'Aug', registered: 121, placed: 29 },
+    ],
+    disability: [
+      { name: 'Locomotor', value: 36, color: '#0056B3' },
+      { name: 'Visual', value: 21, color: '#0E7490' },
+      { name: 'Hearing', value: 22, color: '#6D28D9' },
+      { name: 'Intellectual', value: 13, color: '#B45309' },
+      { name: 'Other', value: 8, color: '#6B7280' },
+    ],
+    quota: [
+      { cat: 'Blindness / Low vision', filled: 0.5, req: 1 },
+      { cat: 'Deaf / Hard of hearing', filled: 0.3, req: 1 },
+      { cat: 'Locomotor disability', filled: 1.2, req: 1 },
+      { cat: 'Autism / Intellectual', filled: 0.1, req: 1 },
+    ],
+    action: 'Tonk has lowest placement rate (7%). Priority: activate Panchayat records digitisation — 31 candidates ready.',
+  },
+  Didwana: {
+    total: 289, registered: 87, placed: 21, quotaFill: 44,
+    opportunities: [
+      { role: 'Salt industry records', candidates: 14, demand: 9 },
+      { role: 'Remote tele-support', candidates: 19, demand: 13 },
+      { role: 'Govt. data entry', candidates: 22, demand: 16 },
+      { role: 'E-commerce content', candidates: 11, demand: 7 },
+      { role: 'Digital literacy', candidates: 8, demand: 5 },
+    ],
+    skills: [
+      { name: 'Basic digital', count: 28 },
+      { name: 'Customer support', count: 14 },
+      { name: 'Data entry', count: 22 },
+      { name: 'Remote-capable', count: 18 },
+      { name: 'Screen reader', count: 9 },
+      { name: 'Bookkeeping', count: 8 },
+    ],
+    trend: [
+      { month: 'Mar', registered: 49, placed: 10 },
+      { month: 'Apr', registered: 58, placed: 13 },
+      { month: 'May', registered: 68, placed: 15 },
+      { month: 'Jun', registered: 75, placed: 17 },
+      { month: 'Jul', registered: 81, placed: 19 },
+      { month: 'Aug', registered: 87, placed: 21 },
+    ],
+    disability: [
+      { name: 'Locomotor', value: 34, color: '#0056B3' },
+      { name: 'Visual', value: 25, color: '#0E7490' },
+      { name: 'Hearing', value: 20, color: '#6D28D9' },
+      { name: 'Intellectual', value: 14, color: '#B45309' },
+      { name: 'Other', value: 7, color: '#6B7280' },
+    ],
+    quota: [
+      { cat: 'Blindness / Low vision', filled: 0.9, req: 1 },
+      { cat: 'Deaf / Hard of hearing', filled: 0.5, req: 1 },
+      { cat: 'Locomotor disability', filled: 1.1, req: 1 },
+      { cat: 'Autism / Intellectual', filled: 0.15, req: 1 },
+    ],
+    action: 'Didwana is smallest district — focus on Govt. data entry (22 candidates, 16 openings) for fastest quota fill.',
+  },
 }
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -65,7 +226,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function GovernmentDashboard() {
   const [district, setDistrict] = useState('Ajmer')
-  const d = districtData[district] || districtData.Ajmer
+  const d = districtData[district]
   const empRate = Math.round((d.placed / d.total) * 100)
   const regRate = Math.round((d.registered / d.total) * 100)
 
@@ -84,12 +245,22 @@ export default function GovernmentDashboard() {
               Registered candidates, skill inventory, placement rates, and quota compliance under the RPWD Act.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', background: '#FFFFFF', padding: '4px', borderRadius: 8, border: '1px solid #D1DAE8' }}>
-            {districts.map(dt => (
-              <button key={dt} onClick={() => setDistrict(dt)} className={`tab ${district === dt ? 'tab-active' : ''}`}>
-                {dt}
-              </button>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', background: '#FFFFFF', padding: '4px', borderRadius: 8, border: '1px solid #D1DAE8' }}>
+              {districts.map(dt => (
+                <button key={dt} onClick={() => setDistrict(dt)} className={`tab ${district === dt ? 'tab-active' : ''}`}>
+                  {dt}
+                </button>
+              ))}
+            </div>
+            <button style={{
+              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px',
+              borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              border: '1px solid #D1DAE8', background: '#FFFFFF', color: '#4B5563',
+              transition: 'all 0.15s'
+            }}>
+              <Download size={14} /> Export district report
+            </button>
           </div>
         </div>
 
@@ -108,6 +279,11 @@ export default function GovernmentDashboard() {
               </div>
               <div style={{ fontSize: 32, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 6 }}>{kpi.val}</div>
               <div style={{ fontSize: 12.5, color: '#4B5563' }}>{kpi.sub}</div>
+              {kpi.label === 'Quota Compliance' && d.quotaFill < 80 && (
+                <div style={{ marginTop: 8, fontSize: 11.5, color: '#B45309', fontWeight: 700 }}>
+                  ↑ {4 - Math.round(d.quotaFill / 25)} more hires needed
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -152,7 +328,7 @@ export default function GovernmentDashboard() {
             </div>
             <div style={{ marginTop: 16, padding: '12px 16px', background: '#E8F0FA', border: '1px solid #BFDBFE', borderRadius: 8, fontSize: 13, color: '#0056B3', display: 'flex', alignItems: 'center', gap: 10 }}>
               <Zap size={16} color="#0056B3" style={{ flexShrink: 0 }} />
-              <span><strong>Action recommendation:</strong> Mobilize 18 local commerce establishments for digital bookkeeping — highest feasibility ratio.</span>
+              <span><strong>Action recommendation:</strong> {d.action}</span>
             </div>
           </div>
 
@@ -242,6 +418,7 @@ export default function GovernmentDashboard() {
             })}
           </div>
         </div>
+
       </div>
     </div>
   )

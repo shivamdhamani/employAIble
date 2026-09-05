@@ -6,6 +6,7 @@ import EmployerPortal from './pages/EmployerPortal'
 import GovernmentDashboard from './pages/GovernmentDashboard'
 import AIMatchEngine from './pages/AIMatchEngine'
 import CSCOnboarding from './pages/CSCOnboarding'
+import CommunityPanel from './pages/CommunityPanel'
 
 export default function App() {
   return (
@@ -13,12 +14,13 @@ export default function App() {
       <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
         <Navbar />
         <Routes>
-          <Route path="/"          element={<LandingPage />} />
-          <Route path="/candidate" element={<CandidatePortal />} />
-          <Route path="/employer"  element={<EmployerPortal />} />
-          <Route path="/government"element={<GovernmentDashboard />} />
-          <Route path="/ai-match"  element={<AIMatchEngine />} />
-          <Route path="/csc"       element={<CSCOnboarding />} />
+          <Route path="/"           element={<LandingPage />} />
+          <Route path="/candidate"  element={<CandidatePortal />} />
+          <Route path="/employer"   element={<EmployerPortal />} />
+          <Route path="/government" element={<GovernmentDashboard />} />
+          <Route path="/ai-match"   element={<AIMatchEngine />} />
+          <Route path="/csc"        element={<CSCOnboarding />} />
+          <Route path="/community"  element={<CommunityPanel />} />
         </Routes>
       </div>
     </BrowserRouter>

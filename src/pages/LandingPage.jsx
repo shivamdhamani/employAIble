@@ -30,6 +30,7 @@ const portals = [
   { title: 'Employer Tools',      desc: 'Convert any role into an inclusive one. Estimate accommodation costs. Discover subsidies.',             path: '/employer',   icon: Building2,  bg: '#0E7490' },
   { title: 'District Dashboard',  desc: 'Skill inventory, placement gaps, quota compliance, and local employment opportunity maps.',             path: '/government', icon: BarChart3,  bg: '#6D28D9' },
   { title: 'Match Scorer',        desc: '7-dimension feasibility check between any candidate and job. Get a placement sustainability score.',    path: '/ai-match',   icon: TrendingUp, bg: '#B45309' },
+  { title: 'Community & Mentors', desc: 'Placed PwDs mentoring the next generation. Peer workshops, success stories, and a live forum.',        path: '/community',  icon: Users,      bg: '#15803D' },
   { title: 'CSC / Panchayat',     desc: 'Offline-capable, Hindi-first onboarding designed for rural candidates via Common Service Centres.',    path: '/csc',        icon: MapPin,     bg: '#BE185D' },
 ]
 
