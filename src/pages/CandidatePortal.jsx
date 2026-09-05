@@ -1,5 +1,95 @@
 import { useState } from 'react'
-import { CheckCircle, ChevronRight, Eye, Ear, Accessibility, Brain, Wifi, WifiOff, AlertCircle, Mic, Volume2, MapPin, Briefcase } from 'lucide-react'
+import {
+  CheckCircle, ChevronRight, Eye, Ear, Accessibility, Brain,
+  Wifi, WifiOff, AlertCircle, Mic, Volume2, MapPin, Briefcase,
+  Landmark, ExternalLink, Download, FileText, Sparkles, Filter, Shield, Info
+} from 'lucide-react'
+import { getSchemesForDisability } from '../data/govtSchemes'
+
+function SchemeCard({ scheme }) {
+  return (
+    <div style={{
+      background: '#FFFFFF',
+      border: '1px solid #D1DAE8',
+      borderRadius: 10,
+      padding: '16px 18px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      position: 'relative',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+      transition: 'all .2s ease',
+      borderTop: `3px solid ${scheme.badgeColor || '#0056B3'}`
+    }}>
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+          <span style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '.05em',
+            padding: '2px 8px',
+            borderRadius: 12,
+            background: `${scheme.badgeColor || '#0056B3'}18`,
+            color: scheme.badgeColor || '#0056B3'
+          }}>
+            {scheme.tag}
+          </span>
+          <span style={{ fontSize: 11, color: '#6B7280', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Landmark size={12} color="#6B7280" /> {scheme.body.split(',')[0].slice(0, 24)}...
+          </span>
+        </div>
+
+        <h4 style={{ fontSize: 14.5, fontWeight: 700, color: '#2D2D2D', marginBottom: 6, lineHeight: 1.4 }}>
+          {scheme.name}
+        </h4>
+
+        <div style={{
+          fontSize: 12,
+          fontWeight: 700,
+          color: '#15803D',
+          background: '#DCFCE7',
+          padding: '3px 8px',
+          borderRadius: 6,
+          display: 'inline-block',
+          marginBottom: 10
+        }}>
+          ✦ {scheme.benefit}
+        </div>
+
+        <p style={{ fontSize: 12.5, color: '#4B5563', lineHeight: 1.55, marginBottom: 12 }}>
+          {scheme.whatItDoes}
+        </p>
+
+        <div style={{ fontSize: 11, color: '#475569', background: '#F8FAFC', padding: '6px 8px', borderRadius: 6, border: '1px solid #E2E8F0', marginBottom: 12 }}>
+          <strong>Eligibility:</strong> {scheme.eligibility}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid #EEF2F7' }}>
+        <span style={{ fontSize: 11, color: '#64748B' }}>
+          Portal: <strong>{scheme.portalName}</strong>
+        </span>
+        <a
+          href={scheme.portalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontSize: 11.5,
+            fontWeight: 700,
+            color: scheme.badgeColor || '#0056B3',
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4
+          }}
+        >
+          Apply Online <ExternalLink size={12} />
+        </a>
+      </div>
+    </div>
+  )
+}
 
 const disabilityTypes = [
   { id: 'visual', label: 'Visual Impairment', sub: 'Includes low vision & blindness', icon: Eye, accent: '#0056B3' },
@@ -382,6 +472,8 @@ export default function CandidatePortal() {
   const [commute, setCommute] = useState(10)
   const [needs, setNeeds] = useState(['screenreader'])
   const [voice, setVoice] = useState(false)
+  const [schemeFilter, setSchemeFilter] = useState('all') // 'all', 'specific', 'umbrella'
+  const [step2Tab, setStep2Tab] = useState('jobs') // 'jobs' or 'schemes'
   const [skillsState, setSkillsState] = useState({
     0: 'Yes',
     1: 'Yes',
@@ -394,6 +486,45 @@ export default function CandidatePortal() {
 
   const steps = ['Profile', 'Capabilities', 'Matches']
   const currentMatches = getDynamicMatches(disability, commute, needs, skillsState)
+
+  const schemes = getSchemesForDisability(disability)
+  const displayedSchemes = schemeFilter === 'specific'
+    ? schemes.specific
+    : schemeFilter === 'umbrella'
+    ? schemes.umbrella
+    : [...schemes.specific, ...schemes.umbrella]
+
+  const downloadSchemesDossier = () => {
+    const activeDisName = disabilityTypes.find(d => d.id === disability)?.label || 'All'
+    const lines = [
+      '=========================================================================',
+      'GOVERNMENT SCHEMES & SUBSIDY ENTITLEMENT DOSSIER',
+      'DEPARTMENT OF EMPOWERMENT OF PERSONS WITH DISABILITIES (DEPwD)',
+      'MINISTRY OF SOCIAL JUSTICE & EMPOWERMENT, GOVT OF INDIA',
+      '=========================================================================',
+      `Candidate: Ramesh Kumar Sharma`,
+      `UDID Card: RJ-01-2021-0849201 (DEPwD Verified)`,
+      `Disability Benchmark: ${activeDisName}`,
+      `Date Generated: ${new Date().toLocaleDateString('en-IN')}`,
+      '',
+      `--- PART 1: ${activeDisName.toUpperCase()} SPECIFIC ASSISTIVE DEVICES & SCHEMES (${schemes.specific.length}) ---`,
+      ...schemes.specific.map((s, i) => `[${i + 1}] ${s.name}\n    Nodal Body: ${s.body}\n    Key Entitlement: ${s.benefit}\n    Description: ${s.whatItDoes}\n    Eligibility: ${s.eligibility}\n    Official Portal: ${s.portalName} -> ${s.portalUrl}\n`),
+      '',
+      `--- PART 2: UMBRELLA CROSS-DISABILITY SCHEMES (RPwD ACT 2016) (${schemes.umbrella.length}) ---`,
+      ...schemes.umbrella.map((s, i) => `[${i + 1}] ${s.name}\n    Nodal Body: ${s.body}\n    Key Entitlement: ${s.benefit}\n    Description: ${s.whatItDoes}\n    Eligibility: ${s.eligibility}\n    Official Portal: ${s.portalName} -> ${s.portalUrl}\n`),
+      '=========================================================================',
+      'Generated via employAIble Platform · Swavlamban Gateway Integration',
+      '========================================================================='
+    ].join('\n')
+
+    const blob = new Blob([lines], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Govt_Schemes_${disability}_Dossier.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div style={{ paddingTop: 58 }} className="page-in">
@@ -509,7 +640,95 @@ export default function CandidatePortal() {
               </div>
             </div>
 
-            <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'flex-end' }}>
+            {/* Entitled Government Schemes & Subsidies Deck */}
+            <div style={{ gridColumn: '1/-1' }}>
+              <div style={{
+                background: '#FFFFFF',
+                border: '1.5px solid #BFDBFE',
+                borderRadius: 12,
+                padding: '22px 24px',
+                boxShadow: '0 2px 8px rgba(0,86,179,0.05)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, marginBottom: 16 }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 9px', background: '#E8F0FA', borderRadius: 20, fontSize: 11.5, fontWeight: 700, color: '#0056B3' }}>
+                        <Landmark size={13} /> DEPwD & MSJE Welfare Reference
+                      </span>
+                      <span style={{ fontSize: 11, fontWeight: 700, background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: 20 }}>
+                        RPwD Act 2016 Compliant
+                      </span>
+                    </div>
+                    <h3 style={{ fontSize: 18, fontWeight: 800, color: '#2D2D2D', letterSpacing: '-0.02em' }}>
+                      Government Schemes & Subsidies for {disabilityTypes.find(d => d.id === disability)?.label}
+                    </h3>
+                    <p style={{ fontSize: 13, color: '#4B5563', maxWidth: 620, marginTop: 2 }}>
+                      Recognized under the Rights of Persons with Disabilities (RPwD) Act, 2016. Select your filter below to review free assistive aids, medical cover, and statutory rights.
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button
+                        type="button"
+                        onClick={() => setSchemeFilter('all')}
+                        style={{
+                          padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+                          background: schemeFilter === 'all' ? '#0056B3' : '#EEF2F7',
+                          color: schemeFilter === 'all' ? '#FFFFFF' : '#4B5563'
+                        }}
+                      >
+                        All ({schemes.totalCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSchemeFilter('specific')}
+                        style={{
+                          padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+                          background: schemeFilter === 'specific' ? '#0056B3' : '#EEF2F7',
+                          color: schemeFilter === 'specific' ? '#FFFFFF' : '#4B5563'
+                        }}
+                      >
+                        {disabilityTypes.find(d => d.id === disability)?.label.split(' ')[0]} Specific ({schemes.specific.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSchemeFilter('umbrella')}
+                        style={{
+                          padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+                          background: schemeFilter === 'umbrella' ? '#0056B3' : '#EEF2F7',
+                          color: schemeFilter === 'umbrella' ? '#FFFFFF' : '#4B5563'
+                        }}
+                      >
+                        Universal / Cross-Disability ({schemes.umbrella.length})
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={downloadSchemesDossier}
+                      className="btn-light btn-sm"
+                      style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600 }}
+                      title="Download full list of schemes as official text dossier"
+                    >
+                      <Download size={13} /> Download Dossier
+                    </button>
+                  </div>
+                </div>
+
+                {/* Grid of Scheme Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
+                  {displayedSchemes.map(sch => (
+                    <SchemeCard key={sch.id} scheme={sch} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+              <span style={{ fontSize: 12.5, color: '#6B7280' }}>
+                ✓ {schemes.totalCount} welfare schemes automatically unlocked based on your UDID classification
+              </span>
               <button onClick={() => setStep(1)} className="btn-blue">Continue to Capabilities <ChevronRight size={16} /></button>
             </div>
           </div>
@@ -605,11 +824,119 @@ export default function CandidatePortal() {
                 Filtered for {disabilityTypes.find(d => d.id === disability)?.label} · Max {commute} km
               </div>
             </div>
-            {currentMatches.map((job, i) => <JobCard key={i} job={job} />)}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <button onClick={() => setStep(1)} className="btn-ghost">← Refine Capabilities</button>
-              <span style={{ fontSize: 13, color: '#6B7280' }}>Showing verified vacancies with RPWD Act 4% reservation status</span>
+
+            {/* View Switcher: Jobs vs Schemes */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #D1DAE8', paddingBottom: 8, flexWrap: 'wrap', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setStep2Tab('jobs')}
+                  style={{
+                    padding: '8px 16px', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
+                    background: step2Tab === 'jobs' ? '#0056B3' : '#FFFFFF',
+                    color: step2Tab === 'jobs' ? '#FFFFFF' : '#4B5563',
+                    boxShadow: step2Tab === 'jobs' ? '0 2px 4px rgba(0,86,179,0.2)' : 'none',
+                    border: step2Tab === 'jobs' ? '1.5px solid #0056B3' : '1px solid #D1DAE8',
+                    display: 'flex', alignItems: 'center', gap: 6, transition: 'all .15s'
+                  }}
+                >
+                  <Briefcase size={15} /> Sustainable Job Matches ({currentMatches.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep2Tab('schemes')}
+                  style={{
+                    padding: '8px 16px', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
+                    background: step2Tab === 'schemes' ? '#0056B3' : '#FFFFFF',
+                    color: step2Tab === 'schemes' ? '#FFFFFF' : '#4B5563',
+                    boxShadow: step2Tab === 'schemes' ? '0 2px 4px rgba(0,86,179,0.2)' : 'none',
+                    border: step2Tab === 'schemes' ? '1.5px solid #0056B3' : '1px solid #D1DAE8',
+                    display: 'flex', alignItems: 'center', gap: 6, transition: 'all .15s'
+                  }}
+                >
+                  <Landmark size={15} /> Government Schemes & Subsidies ({schemes.totalCount})
+                </button>
+              </div>
+
+              {step2Tab === 'schemes' && (
+                <button
+                  type="button"
+                  onClick={downloadSchemesDossier}
+                  className="btn-light btn-sm"
+                  style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600 }}
+                >
+                  <Download size={13} /> Export All Schemes (.txt)
+                </button>
+              )}
             </div>
+
+            {/* Jobs View */}
+            {step2Tab === 'jobs' && (
+              <>
+                {currentMatches.map((job, i) => <JobCard key={i} job={job} />)}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <button onClick={() => setStep(1)} className="btn-ghost">← Refine Capabilities</button>
+                  <span style={{ fontSize: 13, color: '#6B7280' }}>Showing verified vacancies with RPWD Act 4% reservation status</span>
+                </div>
+              </>
+            )}
+
+            {/* Government Schemes View */}
+            {step2Tab === 'schemes' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#E8F0FA', padding: '12px 18px', borderRadius: 8, border: '1px solid #BFDBFE', flexWrap: 'wrap', gap: 10 }}>
+                  <div style={{ fontSize: 13.5, color: '#0056B3', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Shield size={16} /> Entitlement identified under RPwD Act 2016 for {disabilityTypes.find(d => d.id === disability)?.label}
+                  </div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      type="button"
+                      onClick={() => setSchemeFilter('all')}
+                      style={{
+                        padding: '4px 10px', borderRadius: 16, fontSize: 11.5, fontWeight: 600, border: 'none', cursor: 'pointer',
+                        background: schemeFilter === 'all' ? '#0056B3' : '#FFFFFF',
+                        color: schemeFilter === 'all' ? '#FFFFFF' : '#4B5563'
+                      }}
+                    >
+                      All ({schemes.totalCount})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSchemeFilter('specific')}
+                      style={{
+                        padding: '4px 10px', borderRadius: 16, fontSize: 11.5, fontWeight: 600, border: 'none', cursor: 'pointer',
+                        background: schemeFilter === 'specific' ? '#0056B3' : '#FFFFFF',
+                        color: schemeFilter === 'specific' ? '#FFFFFF' : '#4B5563'
+                      }}
+                    >
+                      Specific ({schemes.specific.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSchemeFilter('umbrella')}
+                      style={{
+                        padding: '4px 10px', borderRadius: 16, fontSize: 11.5, fontWeight: 600, border: 'none', cursor: 'pointer',
+                        background: schemeFilter === 'umbrella' ? '#0056B3' : '#FFFFFF',
+                        color: schemeFilter === 'umbrella' ? '#FFFFFF' : '#4B5563'
+                      }}
+                    >
+                      Umbrella ({schemes.umbrella.length})
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
+                  {displayedSchemes.map(sch => (
+                    <SchemeCard key={sch.id} scheme={sch} />
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+                  <button onClick={() => setStep(1)} className="btn-ghost">← Refine Capabilities</button>
+                  <span style={{ fontSize: 12.5, color: '#6B7280' }}>Direct portal applications link to official Government of India websites</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import {
   CheckCircle, Wifi, WifiOff, Volume2, VolumeX, Mic, QrCode,
   AlertCircle, MapPin, Download, RotateCcw, Play, Printer,
-  FileCheck, Shield, Sparkles, Check, ArrowRight, ArrowLeft
+  FileCheck, Shield, Sparkles, Check, ArrowRight, ArrowLeft,
+  Landmark, ExternalLink
 } from 'lucide-react'
+import { getSchemesForDisability } from '../data/govtSchemes'
 
 // Comprehensive multilingual localization dictionary
 const content = {
@@ -407,6 +409,8 @@ export default function CSCOnboarding() {
     }, 1200)
   }
 
+  const cscSchemes = getSchemesForDisability(disability)
+
   const handleDownloadSlip = () => {
     const slipText = `
 ===================================================
@@ -423,6 +427,12 @@ Skills Count   : ${skills.length} Capabilities Verified
 Center Code    : CSC-RAJ-AJM-8821 (Kishangarh VLE)
 Date Registered: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
 RPWD Mandate   : Eligible under Section 34 4% Reserved Pool
+
+---------------------------------------------------
+ENTITLED GOVERNMENT SCHEMES & WELFARE AIDS:
+---------------------------------------------------
+${cscSchemes.specific.map((s, i) => `[${i + 1}] ${s.name} (${s.body})\n    Benefit: ${s.benefit}\n    Portal : ${s.portalName} (${s.portalUrl})\n`).join('')}
+${cscSchemes.umbrella.slice(0, 3).map((s, i) => `[${i + cscSchemes.specific.length + 1}] ${s.name}\n    Benefit: ${s.benefit}\n    Portal : ${s.portalName} (${s.portalUrl})\n`).join('')}
 ===================================================
 Status: Verified & Synced with District Employment Exchange
 ===================================================
@@ -855,6 +865,41 @@ Status: Verified & Synced with District Employment Exchange
                   </span>
                 </div>
               ))}
+            </div>
+
+            {/* Government Welfare Schemes Entitlement Box */}
+            <div className="card p-5" style={{ textAlign: 'left', marginBottom: 20, background: '#FFFFFF', border: '1.5px solid #BFDBFE' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, borderBottom: '1px solid #E2E8F0', paddingBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#0056B3', fontWeight: 800 }}>
+                  <Landmark size={16} /> उम्मीदवार हेतु पात्र सरकारी योजनाएं ({cscSchemes.totalCount} Schemes Identified)
+                </div>
+                <span className="badge badge-green">DEPwD / MSJE Linked</span>
+              </div>
+              <p style={{ fontSize: 12.5, color: '#64748B', marginBottom: 12, lineHeight: 1.5 }}>
+                ग्राम स्तरीय उद्यमी (VLE) उम्मीदवार हेतु इन आधिकारिक सरकारी पोर्टलों पर तत्काल आवेदन कर सकते हैं:
+              </p>
+              <div style={{ display: 'grid', gap: 8 }}>
+                {[...cscSchemes.specific, ...cscSchemes.umbrella.slice(0, 3)].map(sch => (
+                  <div key={sch.id} style={{ padding: '10px 12px', background: '#F8FAFC', borderRadius: 8, border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{sch.name}</div>
+                      <div style={{ fontSize: 11.5, color: '#15803D', fontWeight: 600 }}>✦ {sch.benefit}</div>
+                    </div>
+                    <a
+                      href={sch.portalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: 11.5, fontWeight: 700, color: '#0056B3', textDecoration: 'none',
+                        display: 'inline-flex', alignItems: 'center', gap: 3, flexShrink: 0,
+                        padding: '4px 8px', background: '#E8F0FA', borderRadius: 6
+                      }}
+                    >
+                      पोर्टल <ExternalLink size={11} />
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Next steps notice */}
