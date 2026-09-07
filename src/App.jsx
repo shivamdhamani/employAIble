@@ -9,6 +9,7 @@ import AIMatchEngine from './pages/AIMatchEngine'
 import CSCOnboarding from './pages/CSCOnboarding'
 import CommunityPanel from './pages/CommunityPanel'
 import LoginPage from './pages/LoginPage'
+import AIChatbot from './components/AIChatbot'
 
 function FrontGateway() {
   const { isLoggedIn, user } = useAuth()
@@ -51,6 +52,7 @@ export default function App() {
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <AIChatbot />
         </div>
       </BrowserRouter>
     </AuthProvider>
