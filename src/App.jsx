@@ -13,10 +13,11 @@ import AIChatbot from './components/AIChatbot'
 
 function FrontGateway() {
   const { isLoggedIn, user } = useAuth()
-  if (!isLoggedIn) {
-    return <LoginPage />
+  if (isLoggedIn && user?.redirect) {
+    // Already signed in — show the internal landing hub
+    return <LandingPage />
   }
-  // Once signed in, opens the platform landing or candidate dashboard
+  // Not signed in — show the beautiful public landing page first
   return <LandingPage />
 }
 
